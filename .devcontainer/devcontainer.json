@@ -1,8 +1,11 @@
 {
   "name": "HRConnect Dev Environment",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "devcontainer",
-  "workspaceFolder": "/workspace",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -10,8 +13,7 @@
         "ms-python.vscode-pylance",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "bradlc.vscode-tailwindcss",
-        "ms-azuretools.vscode-docker"
+        "bradlc.vscode-tailwindcss"
       ],
       "settings": {
         "editor.formatOnSave": true
@@ -29,5 +31,5 @@
       "onAutoForward": "notify"
     }
   },
-  "postCreateCommand": "echo 'Dev Container setup completed.'"
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
 }

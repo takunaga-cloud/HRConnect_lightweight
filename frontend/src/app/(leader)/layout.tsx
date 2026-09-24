@@ -1,0 +1,13 @@
+import SharedLayout from "@/components/layout/app-layout";
+
+export default function LeaderLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <SharedLayout>
+            {children}
+        </SharedLayout>
+    );
+}

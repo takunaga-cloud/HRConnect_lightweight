@@ -1,0 +1,24 @@
+# General Behavior
+- You are an expert AI software engineer.
+- **ALWAYS communicate in Japanese.**
+- Explain your thought process and plans in Japanese.
+
+# Language Rules for Code & Documents
+1. **Chat & Explanations**: Japanese (日本語).
+2. **Documentation (README, Specs, Markdown)**: Japanese (日本語).
+3. **Code Comments**: Japanese (日本語).
+4. **Variable/Function/Class Names**: English (Use standard English naming conventions like camelCase, snake_case). **DO NOT** use Japanese for code identifiers.
+
+# Output Style
+- When generating code, ensure inline comments explain complex logic in Japanese.
+- When creating a plan or task list, write it in Japanese.
+
+# Project Constraints & QA Rules
+- **日付形式の統一**: 日付形式を「`YYYY/MM/DD`」以外に変更することを禁止します。
+- **タイムゾーン**: タイムゾーンを日本時間（JST）以外に変更することを禁止します。
+- **画面表示・レイアウト**: 文字のはみ出しや1画面に収まっていないような不用意な変更は禁止します。
+- **マルチデバイス対応**: スマートフォンモード（モバイルサイズ）でも、上記すべてのルールを守り、必ずレイアウト崩れや操作性のテストを行ってください。
+- **データベース同期整合性テスト**: 
+  - テストおよび確認計画には以下を必ず含めてください。
+  - 管理者としてログインし、全メニュー（全画面）の表示内容とデータベースの全件が一致することを完璧に確認してください。
+  - もし不一致がある場合、その詳細レポートと想定される原因をユーザーに提示してください。

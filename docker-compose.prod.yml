@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: ./backend
+    restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
+      - COGNITO_REGION=${COGNITO_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+      - SECRET_KEY=${SECRET_KEY}
+    networks:
+      - hr-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+    networks:
+      - hr-network
+    ports:
+      - "3000:3000"
+
+networks:
+  hr-network:
+    driver: bridge
+
+# Note: In production, we assume Aurora PostgreSQL is managed externally by AWS, 
+# so we don't include a 'db' service here.

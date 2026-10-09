@@ -12,6 +12,7 @@ services:
     environment:
       - DATABASE_URL=sqlite+aiosqlite:////app/hr_connect.db
       - ALLOW_MOCK_AUTH=true
+      - SUPABASE_JWT_SECRET=local-dev-jwt-secret-key-32-chars-long
     restart: always
 
   frontend:

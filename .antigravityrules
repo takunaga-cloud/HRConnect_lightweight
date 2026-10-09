@@ -22,3 +22,8 @@
   - テストおよび確認計画には以下を必ず含めてください。
   - 管理者としてログインし、全メニュー（全画面）の表示内容とデータベースの全件が一致することを完璧に確認してください。
   - もし不一致がある場合、その詳細レポートと想定される原因をユーザーに提示してください。
+# --- Runtime & Execution Instructions ---
+# ホスト環境ではなく、常に Docker Compose コンテナ経由で実行すること
+# - バックエンドテスト: docker compose exec backend pytest
+# - フロントエンドテスト: docker compose exec frontend npm run test
+# - マイグレーション確認: docker compose exec backend alembic current

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRConnect - AWS新規アカウント初期開設 & 月額3ドル未満死守 デプロイ手順書</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #0f172a;
+      --code-text: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", sans-serif;
+      line-height: 1.75;
+      color: var(--text-main);
+      background-color: var(--bg-main);
+      padding: 2.5rem 1rem;
+    }
+
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    h1 {
+      font-size: 1.95rem;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+    }
+
+    .badge-bar {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+    }
+
+    .badge-limit { background: #fee2e2; color: #b91c1c; border: 1px solid #f87171; }
+    .badge-cost { background: #dcfce7; color: #15803d; }
+    .badge-arch { background: #e0f2fe; color: #0369a1; }
+
+    h2 {
+      font-size: 1.45rem;
+      color: #1e293b;
+      margin-top: 2.5rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+
+    /* Step Card */
+    .step-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .step-header {
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .step-num {
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      margin-right: 0.75rem;
+    }
+
+    .step-title-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .step-body {
+      padding: 1.5rem;
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .alert-info { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+    .alert-success { background: #f0fdf4; border-left: 4px solid #22c55e; color: #166534; }
+    .alert-warning { background: #fffbeb; border-left: 4px solid #f59e0b; color: #92400e; }
+    .alert-danger { background: #fef2f2; border-left: 4px solid #ef4444; color: #991b1b; }
+
+    /* Code Blocks */
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0.85rem 0 1.25rem 0;
+    }
+
+    code {
+      font-family: inherit;
+    }
+
+    .inline-code {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+
+    .code-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: -0.5rem;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+      color: #334155;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.8rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .highlight-cell {
+      background-color: #f0fdf4 !important;
+      font-weight: bold;
+      color: #15803d;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>HRConnect - AWS新規アカウント初期開設 & 月額3ドル未満死守 デプロイ手順書</h1>
+      <p class="subtitle">完全ゼロ（アカウント未作成）から、月額固定費0円＆予算3ドル完全ガードレールで本番公開するまでの全手順</p>
+      <div class="badge-bar">
+        <span class="badge badge-limit">⛔ コスト上限: 月額 \$3.00 絶対死守</span>
+        <span class="badge badge-cost">✔ アイドル時維持費: 0円 / 月</span>
+        <span class="badge badge-arch">✔ EC2・RDS完全排除（完全サーバーレス）</span>
+      </div>
+    </header>
+
+    <!-- SECTION 1 -->
+    <section>
+      <h2>第1章: AWS新規アカウント開設 & 初回セキュリティ設定</h2>
+      <p>AWSの契約がこれからの方向けに、アカウント作成から安全な初期設定までの手順です。</p>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">1</span>
+            <span class="step-title-text">AWS アカウントの新規作成（サインアップ）</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p><strong>用意するもの:</strong> メールアドレス、クレジットカード、SMS受信可能なスマートフォン</p>
+          <ol>
+            <li><a href="https://aws.amazon.com/jp/" target="_blank">AWS公式サイト</a> にアクセスし、<strong>「今すぐ無料サインアップ」</strong> をクリックします。</li>
+            <li>メールアドレスと「AWSアカウント名（例: <code>hrconnect-prod</code>）」を入力し、認証コードを確認します。</li>
+            <li>ルートユーザーの強力なパスワードを設定します。</li>
+            <li>連絡先情報（住所・電話番号）を入力します。アカウントの種類は個人/ビジネスどちらでも構いません。</li>
+            <li>クレジットカード情報を登録します（※ 本人確認のため1USD前後の仮請求が行われますが、即時取り消されます）。</li>
+            <li>電話番号によるSMS認証（本人確認）を完了します。</li>
+            <li><strong>サポートプランの選択画面:</strong> 必ず <strong>「ベーシックサポート - 無料」</strong> を選択してください。（他の有料プランを選ぶと月額課金が発生します）。</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">2</span>
+            <span class="step-title-text">ルートユーザーのMFA（多要素認証）有効化【必須セキュリティ】</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>ルートユーザーのアカウント乗っ取りによる高額請求被害を防ぐため、最初に必ず設定します。</p>
+          <ol>
+            <li>作成したルートユーザー（メールアドレス）で <a href="https://console.aws.amazon.com/" target="_blank">AWS マネジメントコンソール</a> にサインインします。</li>
+            <li>画面右上のアカウント名をクリックし、<strong>「セキュリティ認証情報」</strong> を開きます。</li>
+            <li>「多要素認証 (MFA)」セクションで <strong>「MFA デバイスの割り当て」</strong> をクリックします。</li>
+            <li>スマートフォンの認証アプリ（Google Authenticator や 1Password 等）で画面のQRコードをスキャンし、連続する2つのコードを入力して登録を完了します。</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">3</span>
+            <span class="step-title-text">作業用 IAM ユーザーの作成 & アクセスキー発行</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>日々のデプロイやCLI操作でルートユーザーを使わないよう、専用の作業ユーザーを作成します。</p>
+          <ol>
+            <li>コンソール上部検索バーで <strong>「IAM」</strong> を検索して開きます。</li>
+            <li>左メニューの <strong>「ユーザー」</strong> → <strong>「ユーザーの作成」</strong> をクリックします。</li>
+            <li>ユーザー名に <code>deploy-admin</code> と入力します（「AWS マネジメントコンソールへのユーザーアクセスを提供する」はチェックなしでOK）。</li>
+            <li>「許可のオプション」で <strong>「ポリシーを直接アタッチする」</strong> を選択し、検索窓に <code>AdministratorAccess</code> と入力してチェックを入れます。</li>
+            <li>確認して <strong>「ユーザーの作成」</strong> を完了します。</li>
+            <li>作成した <code>deploy-admin</code> ユーザーをクリックし、<strong>「セキュリティ認証情報」</strong> タブを開きます。</li>
+            <li>「アクセスキー」セクションの <strong>「アクセスキーを作成」</strong> をクリックします。</li>
+            <li>ユースケースで <strong>「コマンドラインインターフェイス (CLI)」</strong> を選択し、確認チェックを入れて進みます。</li>
+            <li><strong>重要:</strong> 表示された <strong>「アクセスキー ID」</strong> と <strong>「シークレットアクセスキー」</strong>（または .csv ファイル）を安全に保存します（二度と表示されません）。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section>
+      <h2>第2章: 月額3ドルを絶対に超えない「コスト防壁（ガードレール）」の設定</h2>
+      <p>予期せぬ課金を未然に防ぎ、月額3ドルを死守するための二重・三重のアラートを設定します。</p>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">4</span>
+            <span class="step-title-text">AWS Budgets による多段階アラート設定（$1, $2, $3）</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>AWS標準の予算管理機能（AWS Budgets）を使い、月額上限3ドルに対する3段階の自動通知を設定します。</p>
+          <ol>
+            <li>コンソール上部検索バーで <strong>「AWS Budgets」</strong> を検索して開きます。</li>
+            <li><strong>「予算を作成」</strong> をクリックします。</li>
+            <li>予算タイプで <strong>「コスト予算 - 推奨」</strong> を選択します。</li>
+            <li>以下の通り予算詳細を設定します：
+              <ul>
+                <li><strong>予算名:</strong> <code>HRConnect-Strict-Budget-3USD</code></li>
+                <li><strong>期間:</strong> 毎月</li>
+                <li><strong>開始月:</strong> 今月</li>
+                <li><strong>予算タイプ:</strong> 固定</li>
+                <li><strong>予算額:</strong> <strong><code>3</code></strong> USD</li>
+              </ul>
+            </li>
+            <li><strong>アラートの設定（3段階）:</strong> [アラートを追加] をクリックし、以下を登録します：
+              <table>
+                <thead>
+                  <tr>
+                    <th>警戒レベル</th>
+                    <th>トリガー条件</th>
+                    <th>しきい値</th>
+                    <th>通知タイミング</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>レベル1: 早期検知</strong></td>
+                    <td>実コスト</td>
+                    <td><strong>33.3% ($1.00)</strong></td>
+                    <td>累計で$1に達した時点でメール受信</td>
+                  </tr>
+                  <tr>
+                    <td><strong>レベル2: 警告</strong></td>
+                    <td>実コスト</td>
+                    <td><strong>66.6% ($2.00)</strong></td>
+                    <td>累計で$2に達した時点でメール受信</td>
+                  </tr>
+                  <tr>
+                    <td><strong>レベル3: 上限到達</strong></td>
+                    <td>予測コスト または 実コスト</td>
+                    <td><strong>100.0% ($3.00)</strong></td>
+                    <td>月内$3到達が見込まれた瞬間にメール受信</td>
+                  </tr>
+                </tbody>
+              </table>
+            </li>
+            <li>各アラートのメール受信先にご自身のメールアドレスを入力し、<strong>「予算を作成」</strong> を完了します。</li>
+          </ol>
+
+          <div class="alert alert-success">
+            <strong>✔ 無料枠アラートの有効化:</strong><br>
+            「請求とコスト管理」→「環境設定」→「請求の環境設定」を開き、<strong>「無料利用枠の使用量のアラートを受信する」</strong> にチェックを入れて保存してください。無料枠の85%に達した時点でAWSから自動通知されます。
+          </div>
+        </div>
+      </div>
+
+      <!-- コストの内訳 -->
+      <div class="alert alert-info">
+        <strong>💡 なぜ本構成は月額3ドル未満（ほぼ0円）に収まるのか？</strong>
+        <ul>
+          <li><strong>常時稼働サーバー（EC2）なし:</strong> 待機コスト月額数千円〜数万円が完全にゼロ。</li>
+          <li><strong>NAT Gatewayなし:</strong> VPC NAT Gateway（月約$32の固定費）を一切使わないパブリックサーバーレス設計。</li>
+          <li><strong>AWS新規アカウントの無料枠（12ヶ月無料 + 常時無料）:</strong>
+            <ul>
+              <li>AWS Lambda: 月100万回リクエスト ＆ 320万秒実行が永続無料。</li>
+              <li>Amazon DynamoDB: 25GBストレージ ＆ 25WCU/RCUが永続無料。</li>
+              <li>Amazon S3: 5GBストレージ（12ヶ月無料）。</li>
+              <li>Amazon Cognito: 50,000人アクティブユーザーまで永続無料。</li>
+              <li>API Gateway: HTTP APIは$1.00/100万回（12ヶ月間は月100万回無料）。</li>
+              <li>Amplify Hosting: 月15GBデータ転送・月50万回リクエスト無料。</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section>
+      <h2>第3章: ローカルPC環境の準備</h2>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">5</span>
+            <span class="step-title-text">AWS CLI の設定（初期化）</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>ローカルPCのターミナルで、ステップ3で取得したアクセスキーを設定します。</p>
+          <div class="code-label">ターミナルで実行</div>
+          <pre><code>aws configure
+# AWS Access Key ID [None]: [ステップ3のアクセスキーIDを入力]
+# AWS Secret Access Key [None]: [ステップ3のシークレットアクセスキーを入力]
+# Default region name [None]: ap-northeast-1
+# Default output format [None]: json
+
+# 疎通確認（現在のアカウントIDが表示されれば成功）
+aws sts get-caller-identity</code></pre>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">6</span>
+            <span class="step-title-text">必要ツールの確認（Docker, CDK）</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>デプロイに必要なツールが揃っているか確認します。</p>
+          <div class="code-label">ターミナルで実行</div>
+          <pre><code># 1. Docker が起動しているか確認（Lambdaコンテナのビルドに必要）
+docker ps
+
+# 2. AWS CDK CLI がインストールされているか確認
+npx cdk --version</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section>
+      <h2>第4章: サーバーレスインフラのデプロイ</h2>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">7</span>
+            <span class="step-title-text">CDKの初回ブートストラップ & デプロイ実行</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p><strong>初回ブートストラップ:</strong> 新規アカウントで初めてCDKを使うため、一度だけ実行します：</p>
+          <div class="code-label">ターミナルで実行</div>
+          <pre><code>npx cdk bootstrap aws://$(aws sts get-caller-identity --query Account --output text)/ap-northeast-1</code></pre>
+
+          <p><strong>インフラの一括デプロイ:</strong> プロジェクト直下の <span class="inline-code">deploy.sh</span> を実行します：</p>
+          <div class="code-label">ターミナルで実行</div>
+          <pre><code>chmod +x deploy.sh
+./deploy.sh</code></pre>
+
+          <div class="alert alert-info">
+            <strong>📋 デプロイ完了時の Outputs（出力）をメモしてください:</strong><br>
+            ターミナル画面に表示される以下の情報をコピーしておきます：
+            <pre><code>Outputs:
+HRConnectServerlessStack-prod.ApiEndpointOutput = https://abc123xyz.execute-api.ap-northeast-1.amazonaws.com
+HRConnectServerlessStack-prod.CognitoClientIdOutput = 3abcdefg1234567890hijklmn
+HRConnectServerlessStack-prod.CognitoUserPoolIdOutput = ap-northeast-1_XyZ12345
+HRConnectServerlessStack-prod.DynamoDBTableNameOutput = HRConnectTable-prod
+HRConnectServerlessStack-prod.S3BucketNameOutput = hrconnect-storage-123456789012-ap-northeast-1-prod</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">8</span>
+            <span class="step-title-text">DynamoDB の初期化 & シードデータ投入</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>作成されたDynamoDBに初期ユーザーアカウント（管理者・一般ユーザー）と休暇マスタを投入します。</p>
+          <div class="code-label">ターミナルで実行</div>
+          <pre><code>cd backend
+python3 -m scripts.init_dynamodb
+cd ..</code></pre>
+
+          <div class="alert alert-success">
+            <strong>👤 初期ログインアカウント情報:</strong>
+            <table>
+              <thead>
+                <tr>
+                  <th>種別</th>
+                  <th>ID / メールアドレス</th>
+                  <th>初期パスワード</th>
+                  <th>権限</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>システム管理者</strong></td>
+                  <td><code>admin</code> / <code>admin@hr-connect.com</code></td>
+                  <td><code>Admin#K9x$2P!w9a</code></td>
+                  <td>Admin (管理・承認・設定)</td>
+                </tr>
+                <tr>
+                  <td><strong>一般従業員</strong></td>
+                  <td><code>user1</code> / <code>user1@hr-connect.com</code></td>
+                  <td><code>User@7m*qR8#tN4</code></td>
+                  <td>Employee (打刻・申請)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section>
+      <h2>第5章: フロントエンドの無料ホスティング（AWS Amplify）</h2>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div>
+            <span class="step-num">9</span>
+            <span class="step-title-text">Amplify Hosting へのデプロイ（待機時 $0）</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <ol>
+            <li>ソースコードをGitHubなどのリポジトリにプッシュします。</li>
+            <li>AWSマネジメントコンソールで <strong>「AWS Amplify」</strong> を開き、<strong>「新しいアプリをホスト」</strong> をクリックします。</li>
+            <li>GitHubを選択して認証し、対象リポジトリと <code>main</code> ブランチを選択します。</li>
+            <li>ビルド設定でルートの <span class="inline-code">amplify.yml</span> が自動認識されます。</li>
+            <li><strong>「詳細設定」→「環境変数」</strong> に、ステップ7でメモした値を入力します：
+              <table>
+                <thead>
+                  <tr>
+                    <th>変数名</th>
+                    <th>設定値</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>NEXT_PUBLIC_BACKEND_URL</code></td>
+                    <td><code>https://&lt;ApiEndpointOutputの値&gt;</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>BACKEND_URL</code></td>
+                    <td><code>https://&lt;ApiEndpointOutputの値&gt;</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>NEXT_PUBLIC_COGNITO_USER_POOL_ID</code></td>
+                    <td><code>&lt;CognitoUserPoolIdOutputの値&gt;</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>NEXT_PUBLIC_COGNITO_CLIENT_ID</code></td>
+                    <td><code>&lt;CognitoClientIdOutputの値&gt;</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </li>
+            <li><strong>「保存してデプロイ」</strong> をクリックします。約3〜5分で公開URLが発行されます。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6 -->
+    <section>
+      <h2>第6章: 緊急時のキルスイッチ（撤退・完全停止手順）</h2>
+      <div class="alert alert-danger">
+        <strong>🚨 万が一のコスト超過や検証終了時の完全削除コマンド:</strong><br>
+        もし何らかの理由で即座にすべてのリソースを停止・削除し、一切の課金をストップさせたい場合は、以下のコマンドをターミナルで1回実行するだけで、CDKが作成したリソースがすべて完全に破棄されます。
+        <pre><code>cd infra
+npx cdk destroy --all --force</code></pre>
+        ※ Amplifyアプリを削除する場合は、Amplifyコンソールの「アクション」→「アプリの削除」をクリックします。
+      </div>
+    </section>
+
+    <footer>
+      <p>HRConnect Lightweight - Initial AWS Account Setup & Serverless Deployment Guide</p>
+      <p>© 2026 HRConnect. All rights reserved.</p>
+    </footer>
+  </div>
+
+</body>
+</html>

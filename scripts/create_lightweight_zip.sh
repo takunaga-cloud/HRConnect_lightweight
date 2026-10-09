@@ -21,8 +21,8 @@ output_zip = '$OUTPUT_ZIP'
 
 exclude_dirs = {
     'node_modules', '.venv', 'venv', '.next', '__pycache__', '.pytest_cache',
-    '.git', 'coverage', 'test-results', 'out', 'dist', 'build', 'infra',
-    '.mypy_cache', 'playwright-report', '.idea', '.vscode', 'scripts'
+    '.git', 'coverage', 'test-results', 'out', 'dist', 'build', 'cdk.out',
+    '.mypy_cache', 'playwright-report', '.idea', '.vscode'
 }
 exclude_exts = {'.tar.gz', '.zip', '.pyc', '.DS_Store', '.tmp', '.log', '.sh', '.bat', '.cmd', '.ps1', '.exe'}
 

@@ -1,15 +1,25 @@
+import os
 import aioboto3
 from typing import AsyncGenerator
 from app.core.config import settings
 
-# aioboto3セッションの初期化
-session = aioboto3.Session(
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    region_name=settings.AWS_REGION
-)
+def _get_boto3_session_kwargs():
+    kwargs = {"region_name": settings.AWS_REGION}
+    if settings.AWS_ACCESS_KEY_ID and settings.AWS_SECRET_ACCESS_KEY:
+        kwargs["aws_access_key_id"] = settings.AWS_ACCESS_KEY_ID
+        kwargs["aws_secret_access_key"] = settings.AWS_SECRET_ACCESS_KEY
+    return kwargs
 
-import os
+session = aioboto3.Session(**_get_boto3_session_kwargs())
+
+def _get_dynamodb_client_kwargs():
+    kwargs = {"region_name": settings.AWS_REGION}
+    if settings.AWS_ACCESS_KEY_ID and settings.AWS_SECRET_ACCESS_KEY:
+        kwargs["aws_access_key_id"] = settings.AWS_ACCESS_KEY_ID
+        kwargs["aws_secret_access_key"] = settings.AWS_SECRET_ACCESS_KEY
+    if settings.DYNAMODB_ENDPOINT_URL:
+        kwargs["endpoint_url"] = settings.DYNAMODB_ENDPOINT_URL
+    return kwargs
 
 async def get_dynamodb_resource() -> AsyncGenerator[any, None]:
     """
@@ -19,26 +29,14 @@ async def get_dynamodb_resource() -> AsyncGenerator[any, None]:
         yield None
         return
 
-    async with session.resource(
-        "dynamodb", 
-        endpoint_url=settings.DYNAMODB_ENDPOINT_URL,
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=settings.AWS_REGION
-    ) as resource:
+    async with session.resource("dynamodb", **_get_dynamodb_client_kwargs()) as resource:
         yield resource
 
 async def create_dynamodb_table_if_not_exists():
     """
     ローカル開発環境やテスト環境で、テーブルが存在しない場合に自動生成します。
     """
-    async with session.client(
-        "dynamodb", 
-        endpoint_url=settings.DYNAMODB_ENDPOINT_URL,
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=settings.AWS_REGION
-    ) as client:
+    async with session.client("dynamodb", **_get_dynamodb_client_kwargs()) as client:
         try:
             # テーブルが存在するかチェック
             await client.describe_table(TableName=settings.DYNAMODB_TABLE_NAME)
@@ -74,13 +72,8 @@ async def create_dynamodb_table_if_not_exists():
 
             # テーブル新規作成時のみ、テストユーザーのシードデータ作成
             from app.core.security import get_password_hash
-            async with session.resource(
-                "dynamodb", 
-                endpoint_url=settings.DYNAMODB_ENDPOINT_URL,
-                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                region_name=settings.AWS_REGION
-            ) as resource:
+            async with session.resource("dynamodb", **_get_dynamodb_client_kwargs()) as resource:
+
                 table = await resource.Table(settings.DYNAMODB_TABLE_NAME)
                 
                 # 管理者アカウントの作成

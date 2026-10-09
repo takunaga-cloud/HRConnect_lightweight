@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フロントエンド画面 - HRConnect 仕様書</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.75;
+      color: var(--text);
+      background-color: var(--bg-main);
+    }
+    /* Top Navigation Tab Bar */
+    .header-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      padding: 0 1rem;
+      gap: 0.25rem;
+    }
+    .tab {
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--primary); }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #eff6ff;
+    }
+    .portal-link {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #0369a1;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0 0.5rem;
+    }
+    .portal-link:hover { text-decoration: underline; }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    h2 {
+      font-size: 1.4rem;
+      color: #1e293b;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    h3 {
+      font-size: 1.15rem;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #334155;
+    }
+    li { margin-bottom: 0.35rem; }
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    tr:nth-child(even) { background: #fbfcfe; }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    footer {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <div class="nav-container">
+      <a href="00_full_file_index.html" class="tab ">全ファイル総索引</a>
+<a href="1_infra_aws.html" class="tab ">インフラ & AWS</a>
+<a href="2_backend_core_db.html" class="tab ">基盤 & DB</a>
+<a href="3_backend_api.html" class="tab ">APIエンドポイント</a>
+<a href="4_backend_models_services.html" class="tab ">モデル・スキーマ・サービス</a>
+<a href="5_frontend_pages.html" class="tab active">フロントエンド画面</a>
+<a href="6_frontend_components.html" class="tab ">フロントエンド部品</a>
+<a href="7_scripts_tests.html" class="tab ">スクリプト & テスト</a>
+<a href="8_docs_and_others.html" class="tab ">ドキュメント & 設定</a>
+      <a href="../index.html" class="portal-link">🔍 インタラクティブポータルへ</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>フロントエンド画面 (Next.js App Router / BFF) 仕様詳細書</h1>
+<p>本ドキュメントは、HRConnectにおける「フロントエンド画面 (Next.js App Router / BFF)」カテゴリに属する全ファイルの仕様・構成・詳細を網羅した資料です。</p>
+<p><strong>対象ファイル数:</strong> 39 ファイル</p>
+<hr />
+<h2>掲載ファイル一覧</h2>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/admin-applications/page.tsx</code></a>-admin-applications-page-tsx) : 画面UIコンポーネント (admin-applications 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/admin-attendances/page.tsx</code></a>-admin-attendances-page-tsx) : 画面UIコンポーネント (admin-attendances 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/admin-dashboard/page.tsx</code></a>-admin-dashboard-page-tsx) : 画面UIコンポーネント (admin-dashboard 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/affiliation-groups/page.tsx</code></a>-affiliation-groups-page-tsx) : 画面UIコンポーネント (affiliation-groups 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/analytics/page.tsx</code></a>-analytics-page-tsx) : 画面UIコンポーネント (analytics 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/application-types/page.tsx</code></a>-application-types-page-tsx) : 画面UIコンポーネント (application-types 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/approvals/page.tsx</code></a>-approvals-page-tsx) : 画面UIコンポーネント (approvals 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/attendance-categories/page.tsx</code></a>-attendance-categories-page-tsx) : 画面UIコンポーネント (attendance-categories 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/audit-logs/page.tsx</code></a>-audit-logs-page-tsx) : 画面UIコンポーネント (audit-logs 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/departments/page.tsx</code></a>-departments-page-tsx) : 画面UIコンポーネント (departments 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/exports/page.tsx</code></a>-exports-page-tsx) : 画面UIコンポーネント (exports 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/layout.tsx</code></a>-layout-tsx) : layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/monthly-shifts/page.tsx</code></a>-monthly-shifts-page-tsx) : 画面UIコンポーネント (monthly-shifts 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/paid-leaves/page.tsx</code></a>-paid-leaves-page-tsx) : 画面UIコンポーネント (paid-leaves 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/project-roles/page.tsx</code></a>-project-roles-page-tsx) : 画面UIコンポーネント (project-roles 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/projects/page.tsx</code></a>-projects-page-tsx) : 画面UIコンポーネント (projects 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/shifts/page.tsx</code></a>-shifts-page-tsx) : 画面UIコンポーネント (shifts 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/system-definitions/page.tsx</code></a>-system-definitions-page-tsx) : 画面UIコンポーネント (system-definitions 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/task-categories/page.tsx</code></a>-task-categories-page-tsx) : 画面UIコンポーネント (task-categories 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(admin"><code>frontend/src/app/(admin)/users/page.tsx</code></a>-users-page-tsx) : 画面UIコンポーネント (users 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(auth"><code>frontend/src/app/(auth)/login/page.tsx</code></a>-login-page-tsx) : 画面UIコンポーネント (login 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(leader"><code>frontend/src/app/(leader)/layout.tsx</code></a>-layout-tsx) : layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-src-app-(leader"><code>frontend/src/app/(leader)/project-assignments/page.tsx</code></a>-project-assignments-page-tsx) : 画面UIコンポーネント (project-assignments 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/applications/page.tsx</code></a>-applications-page-tsx) : 画面UIコンポーネント (applications 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/calendar/page.tsx</code></a>-calendar-page-tsx) : 画面UIコンポーネント (calendar 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/daily-report/page.tsx</code></a>-daily-report-page-tsx) : 画面UIコンポーネント (daily-report 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/dashboard/DashboardClient.tsx</code></a>-dashboard-DashboardClient-tsx) : DashboardClient.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/dashboard/page.tsx</code></a>-dashboard-page-tsx) : 画面UIコンポーネント (dashboard 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/layout.tsx</code></a>-layout-tsx) : layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/monthly-reports/page.tsx</code></a>-monthly-reports-page-tsx) : 画面UIコンポーネント (monthly-reports 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/settings/page.tsx</code></a>-settings-page-tsx) : 画面UIコンポーネント (settings 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/skills-portfolio/page.tsx</code></a>-skills-portfolio-page-tsx) : 画面UIコンポーネント (skills-portfolio 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-(user"><code>frontend/src/app/(user)/stamp/page.tsx</code></a>-stamp-page-tsx) : 画面UIコンポーネント (stamp 画面)</li></ul>
+<ul><li><a href="#frontend-src-app-api-auth-login-route-ts"><code>frontend/src/app/api/auth/login/route.ts</code></a> : Next.js Route Handler (BFF API / 認証プロキシ)</li></ul>
+<ul><li><a href="#frontend-src-app-api-auth-logout-route-ts"><code>frontend/src/app/api/auth/logout/route.ts</code></a> : Next.js Route Handler (BFF API / 認証プロキシ)</li></ul>
+<ul><li>[<code>frontend/src/app/api/v1/[...path]/route.ts</code>](#frontend-src-app-api-v1-[---path]-route-ts) : Next.js Route Handler (BFF API / 認証プロキシ)</li></ul>
+<ul><li><a href="#frontend-src-app-globals-css"><code>frontend/src/app/globals.css</code></a> : globals.css モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-src-app-layout-tsx"><code>frontend/src/app/layout.tsx</code></a> : layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-src-app-page-tsx"><code>frontend/src/app/page.tsx</code></a> : 画面UIコンポーネント (app 画面)</li></ul>
+<hr />
+<h2><span id="frontend-src-app-(admin)-admin-applications-page-tsx"></span> frontend/src/app/(admin)/admin-applications/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (admin-applications 画面)</li></ul>
+<ul><li><strong>行数:</strong> 570 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>handleBulkDelete</code></li></ul>
+<ul><li><code>renderEditForm</code></li></ul>
+<ul><li><code>handleSaveEdit</code></li></ul>
+<ul><li><code>handleSelectOne</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<ul><li><code>updateFormData</code></li></ul>
+<ul><li><code>fetchApplications</code></li></ul>
+<ul><li><code>formatDetail</code></li></ul>
+<ul><li><code>ApplicationsPage</code></li></ul>
+<ul><li><code>handleBulkApprove</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>Application</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>@/components/ui/select</code>, <code>@/components/ui/date-input</code>, <code>react</code>, <code>date-fns</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/button</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>date-fns/locale</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { useEffect, useState } from &quot;react&quot;;
+import { format } from &quot;date-fns&quot;;
+import { ja } from &quot;date-fns/locale&quot;;
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from &quot;@/components/ui/dialog&quot;;
+import { Button } from &quot;@/components/ui/button&quot;;
+import { Input } from &quot;@/components/ui/input&quot;;
+import { DateInput } from &quot;@/components/ui/date-input&quot;;
+import { Label } from &quot;@/components/ui/label&quot;;
+import { Textarea } from &quot;@/components/ui/textarea&quot;;
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from &quot;@/components/ui/select&quot;;
+import { Trash2, CalendarCheck } from &quot;lucide-react&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-admin-attendances-page-tsx"></span> frontend/src/app/(admin)/admin-attendances/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (admin-attendances 画面)</li></ul>
+<ul><li><strong>行数:</strong> 52 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>AdminAttendancesPage</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/lib/ui_text</code>, <code>@/components/admin/attendances/AttendanceTable</code>, <code>@/components/layout/page-header</code>, <code>lucide-react</code>, <code>@/hooks/useAdminAttendances</code>, <code>@/components/ui/card</code>, <code>@/components/admin/attendances/AttendanceFilter</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+
+import { useAdminAttendances } from &quot;@/hooks/useAdminAttendances&quot;;
+import { AttendanceFilter } from &quot;@/components/admin/attendances/AttendanceFilter&quot;;
+import { AttendanceTable } from &quot;@/components/admin/attendances/AttendanceTable&quot;;
+import { Card, CardContent } from &quot;@/components/ui/card&quot;;
+import { UI_TEXT } from &quot;@/lib/ui_text&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+import { Clock } from &quot;lucide-react&quot;;
+
+export default function AdminAttendancesPage() {
+    const {
+        attendances,
+        users,
+        currentDate,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-admin-dashboard-page-tsx"></span> frontend/src/app/(admin)/admin-dashboard/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (admin-dashboard 画面)</li></ul>
+<ul><li><strong>行数:</strong> 222 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>AdminDashboardPage</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>DailyAttendanceSummary</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>react</code>, <code>date-fns</code>, <code>@/components/ui/skeleton</code>, <code>lucide-react</code>, <code>sonner</code>, <code>recharts</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+
+import { useState, useEffect, useCallback } from &quot;react&quot;;
+import { format } from &quot;date-fns&quot;;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { toast } from &quot;sonner&quot;;
+import { Skeleton } from &quot;@/components/ui/skeleton&quot;;
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-affiliation-groups-page-tsx"></span> frontend/src/app/(admin)/affiliation-groups/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (affiliation-groups 画面)</li></ul>
+<ul><li><strong>行数:</strong> 258 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>handleSubmit</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<ul><li><code>fetchGroups</code></li></ul>
+<ul><li><code>AffiliationGroupsPage</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>AffiliationGroup</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/table</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/alert-dialog</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useEffect, useState } from &quot;react&quot;;
+import { Plus, Pencil, Trash2, Layers } from &quot;lucide-react&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+
+import { Button } from &quot;@/components/ui/button&quot;;
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-analytics-page-tsx"></span> frontend/src/app/(admin)/analytics/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (analytics 画面)</li></ul>
+<ul><li><strong>行数:</strong> 151 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>AdminAnalyticsPage</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>ProjectCostAnalytics</code></li></ul>
+<ul><li><code>ProjectAnalytics</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>react</code>, <code>date-fns</code>, <code>lucide-react</code>, <code>@/components/ui/skeleton</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>recharts</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useState, useCallback, useEffect } from &quot;react&quot;;
+import { format } from &quot;date-fns&quot;;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;;
+import { Button } from &quot;@/components/ui/button&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { toast } from &quot;sonner&quot;;
+import { Loader2, TrendingUp } from &quot;lucide-react&quot;;
+import { Skeleton } from &quot;@/components/ui/skeleton&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+import {
+  BarChart,
+  Bar,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-application-types-page-tsx"></span> frontend/src/app/(admin)/application-types/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (application-types 画面)</li></ul>
+<ul><li><strong>行数:</strong> 564 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchTemplates</code></li></ul>
+<ul><li><code>handleItemChange</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>handleRemoveItem</code></li></ul>
+<ul><li><code>ApplicationTypesPage</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<ul><li><code>handleCloseDialog</code></li></ul>
+<ul><li><code>handleSave</code></li></ul>
+<ul><li><code>handleAddItem</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>ApplicationTemplateItemConfig</code></li></ul>
+<ul><li><code>ApplicationTemplate</code></li></ul>
+<ul><li><code>ApplicationTemplateSettings</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>@/components/ui/select</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>date-fns</code>, <code>lucide-react</code>, <code>@/components/ui/table</code>, <code>@/components/ui/checkbox</code>, <code>@/components/ui/label</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+
+import { useState, useEffect } from &quot;react&quot;;
+import { toast } from &quot;sonner&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+import { Button } from &quot;@/components/ui/button&quot;;
+import { Input } from &quot;@/components/ui/input&quot;;
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from &quot;@/components/ui/card&quot;;
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-approvals-page-tsx"></span> frontend/src/app/(admin)/approvals/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (approvals 画面)</li></ul>
+<ul><li><strong>行数:</strong> 177 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>AdminApprovalsPage</code></li></ul>
+<ul><li><code>handleAction</code></li></ul>
+<ul><li><code>fetchApplications</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>Application</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>react</code>, <code>lucide-react</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { Loader2, Check, X, FileCheck } from &quot;lucide-react&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+import { toast } from &quot;sonner&quot;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;
+
+interface Application {
+    id: string;
+    type: string;
+    status: string;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-attendance-categories-page-tsx"></span> frontend/src/app/(admin)/attendance-categories/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (attendance-categories 画面)</li></ul>
+<ul><li><strong>行数:</strong> 351 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>AdminAttendanceCategoriesPage</code></li></ul>
+<ul><li><code>fetchTemplates</code></li></ul>
+<ul><li><code>handleSubmit</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>ShiftTemplate</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/table</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/alert-dialog</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useEffect, useState } from &quot;react&quot;;
+import { Plus, Pencil, Trash2, Clock, Search } from &quot;lucide-react&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+
+import { Button } from &quot;@/components/ui/button&quot;;
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from &quot;@/components/ui/card&quot;;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-audit-logs-page-tsx"></span> frontend/src/app/(admin)/audit-logs/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (audit-logs 画面)</li></ul>
+<ul><li><strong>行数:</strong> 144 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchLogs</code></li></ul>
+<ul><li><code>AuditLogsPage</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>AuditLog</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/badge</code>, <code>react</code>, <code>date-fns</code>, <code>lucide-react</code>, <code>@/components/ui/input</code>, <code>@/components/ui/table</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { format } from &quot;date-fns&quot;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { Loader2, Search, FileWarning } from &quot;lucide-react&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+import { Input } from &quot;@/components/ui/input&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-departments-page-tsx"></span> frontend/src/app/(admin)/departments/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (departments 画面)</li></ul>
+<ul><li><strong>行数:</strong> 328 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchDepartments</code></li></ul>
+<ul><li><code>handleSubmit</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<ul><li><code>fetchGroups</code></li></ul>
+<ul><li><code>DepartmentsPage</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>Department</code></li></ul>
+<ul><li><code>AffiliationGroup</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>@/components/ui/select</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/table</code>, <code>@/components/ui/label</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/alert-dialog</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useEffect, useState } from &quot;react&quot;;
+import { Plus, Pencil, Trash2, Building, Layers } from &quot;lucide-react&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+
+import { Button } from &quot;@/components/ui/button&quot;;
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-exports-page-tsx"></span> frontend/src/app/(admin)/exports/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (exports 画面)</li></ul>
+<ul><li><strong>行数:</strong> 261 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>handleDownload</code></li></ul>
+<ul><li><code>handleExecuteClosing</code></li></ul>
+<ul><li><code>AdminExportsPage</code></li></ul>
+<ul><li><code>handleReopen</code></li></ul>
+<ul><li><code>fetchClosingStatus</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>MonthlyClosing</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>react</code>, <code>date-fns</code>, <code>lucide-react</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useState, useEffect } from &quot;react&quot;;
+import { format } from &quot;date-fns&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { Button } from &quot;@/components/ui/button&quot;;
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from &quot;@/components/ui/card&quot;;
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from &quot;@/components/ui/select&quot;;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-layout-tsx"></span> frontend/src/app/(admin)/layout.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 13 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>AdminLayout</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/layout/app-layout</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import SharedLayout from &quot;@/components/layout/app-layout&quot;;
+
+export default function AdminLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        &lt;SharedLayout&gt;
+            {children}
+        &lt;/SharedLayout&gt;
+    );
+}
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-monthly-shifts-page-tsx"></span> frontend/src/app/(admin)/monthly-shifts/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (monthly-shifts 画面)</li></ul>
+<ul><li><strong>行数:</strong> 341 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>formatShiftCell</code></li></ul>
+<ul><li><code>getCellClass</code></li></ul>
+<ul><li><code>getShift</code></li></ul>
+<ul><li><code>toggleUserExpand</code></li></ul>
+<ul><li><code>AdminMonthlyShiftsPage</code></li></ul>
+<ul><li><code>getHeaderClass</code></li></ul>
+<ul><li><code>fetchData</code></li></ul>
+<ul><li><code>getPaidLeaveApp</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>User</code></li></ul>
+<ul><li><code>Shift</code></li></ul>
+<ul><li><code>if</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>react</code>, <code>@/components/ui/tooltip</code>, <code>date-fns</code>, <code>lucide-react</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>date-fns/locale</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isSaturday, isSunday } from &quot;date-fns&quot;
+import { ja } from &quot;date-fns/locale&quot;
+import { ChevronLeft, ChevronRight, Loader2, CalendarRange } from &quot;lucide-react&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from &quot;@/components/ui/select&quot;
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from &quot;@/components/ui/tooltip&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;
+
+interface User {
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-paid-leaves-page-tsx"></span> frontend/src/app/(admin)/paid-leaves/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (paid-leaves 画面)</li></ul>
+<ul><li><strong>行数:</strong> 499 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>AdminPaidLeavesPage</code></li></ul>
+<ul><li><code>fetchInitialData</code></li></ul>
+<ul><li><code>handleGrant</code></li></ul>
+<ul><li><code>normalizeDateStr</code></li></ul>
+<ul><li><code>fetchSummary</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>LeaveLedger</code></li></ul>
+<ul><li><code>LeaveType</code></li></ul>
+<ul><li><code>UserLeaveSummary</code></li></ul>
+<ul><li><code>LeaveLedgerSummary</code></li></ul>
+<ul><li><code>LeaveHistoryItem</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>@/components/ui/date-input</code>, <code>react</code>, <code>date-fns</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/table</code>, <code>@/components/ui/label</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/types</code>, <code>@/components/ui/card</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useState, useEffect, useMemo } from &quot;react&quot;;
+import { format } from &quot;date-fns&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { Button } from &quot;@/components/ui/button&quot;;
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from &quot;@/components/ui/card&quot;;
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-project-roles-page-tsx"></span> frontend/src/app/(admin)/project-roles/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (project-roles 画面)</li></ul>
+<ul><li><strong>行数:</strong> 278 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchRoles</code></li></ul>
+<ul><li><code>handleSubmit</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>ProjectRolesPage</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>ProjectRole</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/table</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/alert-dialog</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useEffect, useState } from &quot;react&quot;;
+import { Plus, Pencil, Trash2, Shield, Award } from &quot;lucide-react&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+
+import { Button } from &quot;@/components/ui/button&quot;;
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-projects-page-tsx"></span> frontend/src/app/(admin)/projects/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (projects 画面)</li></ul>
+<ul><li><strong>行数:</strong> 651 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>TagSelector</code></li></ul>
+<ul><li><code>formatDateStr</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>handleAddTag</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<ul><li><code>AdminProjectsPage</code></li></ul>
+<ul><li><code>handleRemoveTag</code></li></ul>
+<ul><li><code>fetchProjects</code></li></ul>
+<ul><li><code>fetchUsers</code></li></ul>
+<ul><li><code>calculateSubmit</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>TagSelectorProps</code></li></ul>
+<ul><li><code>User</code></li></ul>
+<ul><li><code>Project</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>@/components/ui/badge</code>, <code>@/components/ui/select</code>, <code>@/components/ui/date-input</code>, <code>react</code>, <code>@/components/ui/switch</code>, <code>date-fns</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/table</code>, <code>@/components/ui/label</code>, <code>sonner</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useState, useEffect } from &quot;react&quot;;
+import { format } from &quot;date-fns&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { Button } from &quot;@/components/ui/button&quot;;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;;
+import { Badge } from &quot;@/components/ui/badge&quot;;
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-shifts-page-tsx"></span> frontend/src/app/(admin)/shifts/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (shifts 画面)</li></ul>
+<ul><li><strong>行数:</strong> 301 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>getUserName</code></li></ul>
+<ul><li><code>AdminShiftsPage</code></li></ul>
+<ul><li><code>handleOpenNewShift</code></li></ul>
+<ul><li><code>handleBulkApprove</code></li></ul>
+<ul><li><code>handleEditShift</code></li></ul>
+<ul><li><code>handleApproveShift</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/label</code>, <code>@/components/admin/shifts/ShiftFilters</code>, <code>@/components/admin/shifts/HolidayGenerator</code>, <code>@/components/admin/shifts/ShiftDialog</code>, <code>@/components/ui/date-input</code>, <code>lucide-react</code>, <code>@/components/ui/table</code>, <code>@/components/ui/select</code>, <code>react</code>, <code>date-fns</code>, <code>@/components/admin/shifts/ShiftGenerator</code>, <code>@/components/admin/shifts/TemplateManager</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState } from &quot;react&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from &quot;@/components/ui/table&quot;
+import { Input } from &quot;@/components/ui/input&quot;
+import { DateInput } from &quot;@/components/ui/date-input&quot;
+import { Label } from &quot;@/components/ui/label&quot;
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from &quot;@/components/ui/select&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { format, parseISO } from &quot;date-fns&quot;
+import { ja } from &quot;date-fns/locale&quot;
+import { useShiftManagement } from &quot;@/hooks/useShiftManagement&quot;
+import { Shift } from &quot;@/types&quot;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-system-definitions-page-tsx"></span> frontend/src/app/(admin)/system-definitions/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (system-definitions 画面)</li></ul>
+<ul><li><strong>行数:</strong> 244 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>openCreate</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<ul><li><code>handleSave</code></li></ul>
+<ul><li><code>SystemDefinitionsPage</code></li></ul>
+<ul><li><code>openEdit</code></li></ul>
+<ul><li><code>fetchDefinitions</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>SystemDefinition</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>@/components/ui/select</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/table</code>, <code>@/components/ui/label</code>, <code>@/components/ui/button</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from &quot;@/components/ui/table&quot;
+import {
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-task-categories-page-tsx"></span> frontend/src/app/(admin)/task-categories/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (task-categories 画面)</li></ul>
+<ul><li><strong>行数:</strong> 260 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchCategories</code></li></ul>
+<ul><li><code>handleSubmit</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>AdminTaskCategoriesPage</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>TaskCategory</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/table</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/alert-dialog</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useEffect, useState } from &quot;react&quot;;
+import { Plus, Pencil, Trash2, Tag } from &quot;lucide-react&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+
+import { Button } from &quot;@/components/ui/button&quot;;
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from &quot;@/components/ui/card&quot;;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(admin)-users-page-tsx"></span> frontend/src/app/(admin)/users/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (users 画面)</li></ul>
+<ul><li><strong>行数:</strong> 584 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchDepartments</code></li></ul>
+<ul><li><code>handleOpenDialog</code></li></ul>
+<ul><li><code>handleSubmit</code></li></ul>
+<ul><li><code>handleDelete</code></li></ul>
+<ul><li><code>getStatusLabel</code></li></ul>
+<ul><li><code>fetchWorkRules</code></li></ul>
+<ul><li><code>getRoleLabel</code></li></ul>
+<ul><li><code>fetchUsers</code></li></ul>
+<ul><li><code>getWorkRuleName</code></li></ul>
+<ul><li><code>getRoleBadgeColor</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>Department</code></li></ul>
+<ul><li><code>User</code></li></ul>
+<ul><li><code>WorkRule</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/dialog</code>, <code>@/components/ui/select</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/table</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useEffect, useState } from &quot;react&quot;;
+import { UserCog, Pencil, Building, User as UserIcon, Clock, Plus, Trash2 } from &quot;lucide-react&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+
+import { Button } from &quot;@/components/ui/button&quot;;
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from &quot;@/components/ui/card&quot;;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(auth)-login-page-tsx"></span> frontend/src/app/(auth)/login/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (login 画面)</li></ul>
+<ul><li><strong>行数:</strong> 95 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>handleLogin</code></li></ul>
+<ul><li><code>LoginPage</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>next/navigation</code>, <code>@/components/ui/label</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState } from &quot;react&quot;
+import { useRouter } from &quot;next/navigation&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Input } from &quot;@/components/ui/input&quot;
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { Label } from &quot;@/components/ui/label&quot;
+import { Lock, Mail, User } from &quot;lucide-react&quot;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { toast } from &quot;sonner&quot;;
+
+export default function LoginPage() {
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(leader)-layout-tsx"></span> frontend/src/app/(leader)/layout.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 13 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>LeaderLayout</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/layout/app-layout</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import SharedLayout from &quot;@/components/layout/app-layout&quot;;
+
+export default function LeaderLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        &lt;SharedLayout&gt;
+            {children}
+        &lt;/SharedLayout&gt;
+    );
+}
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(leader)-project-assignments-page-tsx"></span> frontend/src/app/(leader)/project-assignments/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (project-assignments 画面)</li></ul>
+<ul><li><strong>行数:</strong> 291 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>handleSave</code></li></ul>
+<ul><li><code>handleToggleMember</code></li></ul>
+<ul><li><code>handleRoleChange</code></li></ul>
+<ul><li><code>ProjectAssignmentsPage</code></li></ul>
+<ul><li><code>fetchData</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>ProjectRole</code></li></ul>
+<ul><li><code>User</code></li></ul>
+<ul><li><code>Project</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>react</code>, <code>lucide-react</code>, <code>@/components/ui/checkbox</code>, <code>sonner</code>, <code>@/components/ui/button</code>, <code>@/lib/utils</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+import { useState, useEffect } from &quot;react&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { Button } from &quot;@/components/ui/button&quot;;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;;
+import { cn } from &quot;@/lib/utils&quot;;
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from &quot;@/components/ui/select&quot;;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-applications-page-tsx"></span> frontend/src/app/(user)/applications/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (applications 画面)</li></ul>
+<ul><li><strong>行数:</strong> 748 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchLeaveSummary</code></li></ul>
+<ul><li><code>fetchTemplates</code></li></ul>
+<ul><li><code>handleDynamicInputChange</code></li></ul>
+<ul><li><code>getPaidLeaveBreakdown</code></li></ul>
+<ul><li><code>handleSubmit</code></li></ul>
+<ul><li><code>ApplicationPage</code></li></ul>
+<ul><li><code>isLeaveTypeFullDay</code></li></ul>
+<ul><li><code>getLeaveTypeValue</code></li></ul>
+<ul><li><code>normalizeDateStr</code></li></ul>
+<ul><li><code>getOptionsForSelect</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>if</code></li></ul>
+<ul><li><code>ApplicationTemplate</code></li></ul>
+<ul><li><code>ApplicationTemplateItemConfig</code></li></ul>
+<ul><li><code>update</code></li></ul>
+<ul><li><code>Application</code></li></ul>
+<ul><li><code>changes</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>@/components/ui/date-input</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/ui/textarea</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from &quot;@/components/ui/card&quot;
+import { Input } from &quot;@/components/ui/input&quot;
+import { DateInput } from &quot;@/components/ui/date-input&quot;
+import { Label } from &quot;@/components/ui/label&quot;
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from &quot;@/components/ui/select&quot;
+import { Textarea } from &quot;@/components/ui/textarea&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { Loader2, Send } from &quot;lucide-react&quot;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-calendar-page-tsx"></span> frontend/src/app/(user)/calendar/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (calendar 画面)</li></ul>
+<ul><li><strong>行数:</strong> 431 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>formatTime</code></li></ul>
+<ul><li><code>prevMonth</code></li></ul>
+<ul><li><code>AttendanceCalendarPage</code></li></ul>
+<ul><li><code>fetchRecords</code></li></ul>
+<ul><li><code>handleDayClick</code></li></ul>
+<ul><li><code>nextMonth</code></li></ul>
+<ul><li><code>getRecordForDay</code></li></ul>
+<ul><li><code>handleCancelShiftRequest</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>Attendance</code></li></ul>
+<ul><li><code>DailyRecord</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/StampCorrectionModal</code>, <code>@/components/ShiftRequestModal</code>, <code>react</code>, <code>lucide-react</code>, <code>next/navigation</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { ChevronLeft, ChevronRight, Clock, Calendar } from &quot;lucide-react&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { useRouter } from &quot;next/navigation&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;
+import StampCorrectionModal from &quot;@/components/StampCorrectionModal&quot;
+import ShiftRequestModal from &quot;@/components/ShiftRequestModal&quot;
+
+interface Attendance {
+    clock_in: string | null;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-daily-report-page-tsx"></span> frontend/src/app/(user)/daily-report/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (daily-report 画面)</li></ul>
+<ul><li><strong>行数:</strong> 576 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>fetchSelectOptions</code></li></ul>
+<ul><li><code>handleShiftTypeChange</code></li></ul>
+<ul><li><code>addLog</code></li></ul>
+<ul><li><code>removeLog</code></li></ul>
+<ul><li><code>handleSave</code></li></ul>
+<ul><li><code>updateLog</code></li></ul>
+<ul><li><code>DailyReportPage</code></li></ul>
+<ul><li><code>formatToSlash</code></li></ul>
+<ul><li><code>DailyReportContent</code></li></ul>
+<ul><li><code>normalizeDateStr</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>ShiftTemplate</code></li></ul>
+<ul><li><code>WorkLog</code></li></ul>
+<ul><li><code>TaskCategory</code></li></ul>
+<ul><li><code>fetched</code></li></ul>
+<ul><li><code>Project</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>@/components/ui/date-input</code>, <code>@/lib/ui_text</code>, <code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>next/navigation</code>, <code>@/components/ui/label</code>, <code>@/components/ui/table</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+export const dynamic = &quot;force-dynamic&quot;;
+
+import { useState, useEffect, Suspense } from &quot;react&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Card, CardContent } from &quot;@/components/ui/card&quot;
+import { Input } from &quot;@/components/ui/input&quot;
+import { DateInput } from &quot;@/components/ui/date-input&quot;
+import { Label } from &quot;@/components/ui/label&quot;
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from &quot;@/components/ui/select&quot;
+import { Trash2, Plus, Save, Loader2, LayoutGrid, Table as TableIcon, FileText } from &quot;lucide-react&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+import { Tabs, TabsList, TabsTrigger } from &quot;@/components/ui/tabs&quot;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-dashboard-DashboardClient-tsx"></span> frontend/src/app/(user)/dashboard/DashboardClient.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> DashboardClient.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 248 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>DashboardClient</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>DashboardClientProps</code></li></ul>
+<ul><li><code>DashboardSummary</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>react</code>, <code>framer-motion</code>, <code>lucide-react</code>, <code>next/navigation</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/ui/alert</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { Card, CardContent, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Alert, AlertDescription, AlertTitle } from &quot;@/components/ui/alert&quot;
+import { Clock, Briefcase, Calendar as CalendarIcon, FileText, AlertTriangle, LayoutGrid } from &quot;lucide-react&quot;
+// import { useAuth } from &quot;@/context/AuthContext&quot;
+import { useRouter } from &quot;next/navigation&quot;
+import { motion } from &quot;framer-motion&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+
+const container = {
+    hidden: { opacity: 0 },
+    show: {
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-dashboard-page-tsx"></span> frontend/src/app/(user)/dashboard/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (dashboard 画面)</li></ul>
+<ul><li><strong>行数:</strong> 56 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>getData</code></li></ul>
+<ul><li><code>DashboardPage</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>./DashboardClient</code>, <code>next/headers</code>, <code>next/navigation</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { cookies } from &quot;next/headers&quot;;
+import { redirect } from &quot;next/navigation&quot;;
+import DashboardClient from &quot;./DashboardClient&quot;;
+
+// Helper to fetch data on server
+async function getData(token: string) {
+    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || &quot;http://localhost:8000&quot;; // Use internal URL for SS
+
+    try {
+        const [summaryRes, userRes] = await Promise.all([
+            fetch(`${backendUrl}/api/v1/dashboard/my-summary`, {
+                headers: { &#x27;Authorization&#x27;: `Bearer ${token}` },
+                cache: &#x27;no-store&#x27;
+            }),
+            fetch(`${backendUrl}/api/v1/users/me`, {
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-layout-tsx"></span> frontend/src/app/(user)/layout.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 13 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>UserLayout</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/layout/app-layout</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import SharedLayout from &quot;@/components/layout/app-layout&quot;;
+
+export default function UserLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        &lt;SharedLayout&gt;
+            {children}
+        &lt;/SharedLayout&gt;
+    );
+}
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-monthly-reports-page-tsx"></span> frontend/src/app/(user)/monthly-reports/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (monthly-reports 画面)</li></ul>
+<ul><li><strong>行数:</strong> 234 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>formatTime</code></li></ul>
+<ul><li><code>prevMonth</code></li></ul>
+<ul><li><code>formatMinutes</code></li></ul>
+<ul><li><code>getDayColor</code></li></ul>
+<ul><li><code>MonthlyReportPage</code></li></ul>
+<ul><li><code>fetchRecords</code></li></ul>
+<ul><li><code>isNonWorkingDay</code></li></ul>
+<ul><li><code>nextMonth</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>WorkLogWithDetails</code></li></ul>
+<ul><li><code>ProjectBase</code></li></ul>
+<ul><li><code>TaskCategoryBase</code></li></ul>
+<ul><li><code>AttendanceResponse</code></li></ul>
+<ul><li><code>CalendarDailyResponse</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>react</code>, <code>@/components/ui/tooltip</code>, <code>date-fns</code>, <code>lucide-react</code>, <code>next/navigation</code>, <code>@/components/ui/table</code>, <code>@/components/ui/button</code>, <code>@/lib/utils</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+import { useRouter } from &quot;next/navigation&quot;;
+
+import { useState, useEffect } from &quot;react&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { format } from &quot;date-fns&quot;;
+import { ja } from &quot;date-fns/locale&quot;;
+import {
+    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from &quot;@/components/ui/table&quot;;
+import {
+    Card, CardContent, CardHeader, CardTitle
+} from &quot;@/components/ui/card&quot;;
+import {
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-settings-page-tsx"></span> frontend/src/app/(user)/settings/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (settings 画面)</li></ul>
+<ul><li><strong>行数:</strong> 189 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>handleSaveRule</code></li></ul>
+<ul><li><code>fetchWorkRules</code></li></ul>
+<ul><li><code>handleConfigChange</code></li></ul>
+<ul><li><code>SettingsPage</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>react</code>, <code>@/components/ui/input</code>, <code>lucide-react</code>, <code>@/components/ui/label</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/ui/tabs</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;
+import { Input } from &quot;@/components/ui/input&quot;
+import { Label } from &quot;@/components/ui/label&quot;
+import { Tabs, TabsContent, TabsList, TabsTrigger } from &quot;@/components/ui/tabs&quot;
+import { Settings } from &quot;lucide-react&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+
+export default function SettingsPage() {
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-skills-portfolio-page-tsx"></span> frontend/src/app/(user)/skills-portfolio/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (skills-portfolio 画面)</li></ul>
+<ul><li><strong>行数:</strong> 324 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>SkillsPortfolioPage</code></li></ul>
+<ul><li><code>fetchUsers</code></li></ul>
+<ul><li><code>fetchSkills</code></li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>SkillItem</code></li></ul>
+<ul><li><code>User</code></li></ul>
+<ul><li><code>SkillsData</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/ui/select</code>, <code>react</code>, <code>lucide-react</code>, <code>sonner</code>, <code>recharts</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;;
+
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+import { useState, useEffect } from &quot;react&quot;;
+import { useAuth } from &quot;@/context/AuthContext&quot;;
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from &quot;@/components/ui/card&quot;;
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from &quot;@/components/ui/select&quot;;
+import { Loader2, BookOpen, Cpu, Globe, Award, Hourglass, FolderOpen, CalendarDays } from &quot;lucide-react&quot;;
+import { toast } from &quot;sonner&quot;;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;;
+import {
+    ResponsiveContainer,
+    RadarChart,
+    PolarGrid,
+    PolarAngleAxis,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-(user)-stamp-page-tsx"></span> frontend/src/app/(user)/stamp/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (stamp 画面)</li></ul>
+<ul><li><strong>行数:</strong> 296 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>formatDateTime</code></li></ul>
+<ul><li><code>fetchShift</code></li></ul>
+<ul><li><code>fetchStatus</code></li></ul>
+<ul><li><code>handleClockIn</code></li></ul>
+<ul><li><code>handleGetLocation</code></li></ul>
+<ul><li><code>fetchAddress</code></li></ul>
+<ul><li><code>handleClockOut</code></li></ul>
+<ul><li><code>StampPage</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/components/StampCorrectionModal</code>, <code>react</code>, <code>lucide-react</code>, <code>@/components/ui/button</code>, <code>@/components/ui/card</code>, <code>@/context/AuthContext</code>, <code>@/lib/constants</code>, <code>@/components/layout/page-header</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;use client&quot;
+
+import { useState, useEffect } from &quot;react&quot;
+import { useAuth } from &quot;@/context/AuthContext&quot;
+import { Button } from &quot;@/components/ui/button&quot;
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from &quot;@/components/ui/card&quot;
+import { MapPin, Loader2, Clock } from &quot;lucide-react&quot;
+import { BACKEND_URL } from &quot;@/lib/constants&quot;;
+import StampCorrectionModal from &quot;@/components/StampCorrectionModal&quot;
+import { PageHeader } from &quot;@/components/layout/page-header&quot;
+
+export default function StampPage() {
+  const { isAuthenticated } = useAuth() || {};
+  const [location, setLocation] = useState&lt;{ lat: number; lng: number } | null&gt;(null)
+  const [address, setAddress] = useState&lt;string | null&gt;(null)
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-api-auth-login-route-ts"></span> frontend/src/app/api/auth/login/route.ts</h2>
+<ul><li><strong>ファイル概要:</strong> Next.js Route Handler (BFF API / 認証プロキシ)</li></ul>
+<ul><li><strong>行数:</strong> 51 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>POST</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>next/headers</code>, <code>next/server</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { NextResponse } from &quot;next/server&quot;;
+import { cookies } from &quot;next/headers&quot;;
+
+let BACKEND_URL = process.env.BACKEND_URL || &quot;http://localhost:8000&quot;;
+if (!process.env.BACKEND_URL &amp;&amp; process.env.NEXT_PUBLIC_BACKEND_URL) {
+    BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/api\/v1\/?$/, &quot;&quot;);
+}
+
+export async function POST(request: Request) {
+    try {
+        const body = await request.json();
+        const { username, password } = body;
+
+        const formData = new URLSearchParams();
+        formData.append(&quot;username&quot;, username);
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-api-auth-logout-route-ts"></span> frontend/src/app/api/auth/logout/route.ts</h2>
+<ul><li><strong>ファイル概要:</strong> Next.js Route Handler (BFF API / 認証プロキシ)</li></ul>
+<ul><li><strong>行数:</strong> 8 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>POST</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>next/headers</code>, <code>next/server</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { NextResponse } from &quot;next/server&quot;;
+import { cookies } from &quot;next/headers&quot;;
+
+export async function POST() {
+    const cookieStore = await cookies();
+    cookieStore.delete(&quot;token&quot;);
+    return NextResponse.json({ success: true });
+}
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-api-v1-[---path]-route-ts"></span> frontend/src/app/api/v1/[...path]/route.ts</h2>
+<ul><li><strong>ファイル概要:</strong> Next.js Route Handler (BFF API / 認証プロキシ)</li></ul>
+<ul><li><strong>行数:</strong> 83 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>handleProxy</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@/lib/constants</code>, <code>next/headers</code>, <code>next/server</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { NextRequest, NextResponse } from &quot;next/server&quot;;
+import { cookies } from &quot;next/headers&quot;;
+import { AUTH_COOKIE_NAME } from &quot;@/lib/constants&quot;;
+
+let BACKEND_URL = process.env.BACKEND_URL || &quot;http://localhost:8000&quot;;
+if (!process.env.BACKEND_URL &amp;&amp; process.env.NEXT_PUBLIC_BACKEND_URL) {
+    BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/api\/v1\/?$/, &quot;&quot;);
+}
+
+async function handleProxy(request: NextRequest, { params }: { params: Promise&lt;{ path: string[] }&gt; }) {
+    const { path } = await params;
+    const cookieStore = await cookies();
+    const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+
+    console.log(`[Proxy] Incoming request: ${request.method} ${request.url}`);
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-globals-css"></span> frontend/src/app/globals.css</h2>
+<ul><li><strong>ファイル概要:</strong> globals.css モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 152 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+@import &quot;tailwindcss&quot;;
+@import &quot;tw-animate-css&quot;;
+
+@custom-variant dark (&amp;:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-layout-tsx"></span> frontend/src/app/layout.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> layout.tsx モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 45 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>RootLayout</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>next/font/google</code>, <code>@/components/theme-provider</code>, <code>next</code>, <code>@/context/AuthContext</code>, <code>@/components/ui/sonner</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import type { Metadata, Viewport } from &quot;next&quot;;
+import { Inter } from &quot;next/font/google&quot;;
+import &quot;./globals.css&quot;;
+import { ThemeProvider } from &quot;@/components/theme-provider&quot;
+
+const inter = Inter({ subsets: [&quot;latin&quot;] });
+
+export const metadata: Metadata = {
+  title: &quot;HR-Connect - オールインワン労務管理システム&quot;,
+  description: &quot;「勤怠管理」「シフト管理」「申請」「日報（工数）」を単一のプラットフォームで統合管理する労務管理システム&quot;,
+};
+
+export const viewport: Viewport = {
+  width: &quot;device-width&quot;,
+  initialScale: 1,
+</code></pre>
+<hr />
+<h2><span id="frontend-src-app-page-tsx"></span> frontend/src/app/page.tsx</h2>
+<ul><li><strong>ファイル概要:</strong> 画面UIコンポーネント (app 画面)</li></ul>
+<ul><li><strong>行数:</strong> 5 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> フロントエンド画面 (Next.js App Router / BFF)</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>Home</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>next/navigation</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { redirect } from &#x27;next/navigation&#x27;;
+
+export default function Home() {
+  redirect(&#x27;/login&#x27;);
+}
+</code></pre>
+<hr />
+  </div>
+
+  <footer>
+    <p>HRConnect Lightweight - Full System Specification Documentation</p>
+    <p>© 2026 HRConnect. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

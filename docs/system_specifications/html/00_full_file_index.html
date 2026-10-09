@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全ファイル総索引 - HRConnect 仕様書</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.75;
+      color: var(--text);
+      background-color: var(--bg-main);
+    }
+    /* Top Navigation Tab Bar */
+    .header-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      padding: 0 1rem;
+      gap: 0.25rem;
+    }
+    .tab {
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--primary); }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #eff6ff;
+    }
+    .portal-link {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #0369a1;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0 0.5rem;
+    }
+    .portal-link:hover { text-decoration: underline; }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    h2 {
+      font-size: 1.4rem;
+      color: #1e293b;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    h3 {
+      font-size: 1.15rem;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #334155;
+    }
+    li { margin-bottom: 0.35rem; }
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    tr:nth-child(even) { background: #fbfcfe; }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    footer {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <div class="nav-container">
+      <a href="00_full_file_index.html" class="tab active">全ファイル総索引</a>
+<a href="1_infra_aws.html" class="tab ">インフラ & AWS</a>
+<a href="2_backend_core_db.html" class="tab ">基盤 & DB</a>
+<a href="3_backend_api.html" class="tab ">APIエンドポイント</a>
+<a href="4_backend_models_services.html" class="tab ">モデル・スキーマ・サービス</a>
+<a href="5_frontend_pages.html" class="tab ">フロントエンド画面</a>
+<a href="6_frontend_components.html" class="tab ">フロントエンド部品</a>
+<a href="7_scripts_tests.html" class="tab ">スクリプト & テスト</a>
+<a href="8_docs_and_others.html" class="tab ">ドキュメント & 設定</a>
+      <a href="../index.html" class="portal-link">🔍 インタラクティブポータルへ</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>HRConnect 全ソース・全ファイル完全仕様辞書 (Master Index)</h1>
+<p>プロジェクト総ファイル数: <strong>252</strong> ファイル</p>
+<div class="table-container"><table>
+<thead><tr><th>カテゴリ</th><th>ファイルパス</th><th>行数</th><th>概要・役割</th></tr></thead><tbody>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>.antigravityrules</code></td><td>29</td><td>.antigravityrules モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>.cursorrules</code></td><td>26</td><td>.cursorrules モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>.env</code></td><td>26</td><td>.env モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>.env.production.template</code></td><td>27</td><td>.env.production.template モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>.gitignore</code></td><td>38</td><td>.gitignore モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>amplify.yml</code></td><td>20</td><td>AWS Amplify Hosting CI/CDビルド設定</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>architecture_diagram.md</code></td><td>500</td><td>design.md</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>aws_deployment_step_by_step_guide.html</code></td><td>609</td><td>aws_deployment_step_by_step_guide.html モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>aws_serverless_architecture.html</code></td><td>479</td><td>aws_serverless_architecture.html モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/.dockerignore</code></td><td>8</td><td>.dockerignore モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/Dockerfile</code></td><td>25</td><td>Dockerfile モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>backend/Dockerfile.lambda</code></td><td>15</td><td>Dockerfile.lambda モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/README</code></td><td>1</td><td>README モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/env.py</code></td><td>102</td><td>env.py モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/script.py.mako</code></td><td>28</td><td>script.py.mako モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/0d3446f2df76_add_skill_columns_to_project.py</code></td><td>36</td><td>Add skill columns to Project</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/25eaaa692760_fix_schema.py</code></td><td>64</td><td>fix schema</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/294a7a977840_add_hashed_password_to_user.py</code></td><td>32</td><td>Add hashed_password to User</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/2a1d7c636fef_add_hourly_rate_to_user.py</code></td><td>32</td><td>Add hourly_rate to user</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/33b1f50c310c_add_project_role.py</code></td><td>44</td><td>Add project role</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/40c2ff2543e3_add_user_id_to_user.py</code></td><td>35</td><td>Add user_id to User</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/52f523s89h2_add_settings.py</code></td><td>28</td><td>add settings to application template</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/74e490ef0b95_add_difficulty_and_category_to_projects.py</code></td><td>34</td><td>add_difficulty_and_category_to_projects</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/8ddd255f0cd9_add_leave_types_and_ledgers.py</code></td><td>81</td><td>Add leave types and ledgers</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic/versions/aac66402b735_add_status_to_shift.py</code></td><td>32</td><td>Add status to shift</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/alembic.ini</code></td><td>147</td><td>A generic, single database configuration.</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/app/__init__.py</code></td><td>0</td><td>__init__.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/api.py</code></td><td>56</td><td>api.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/deps.py</code></td><td>137</td><td>deps.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/affiliation_groups.py</code></td><td>106</td><td>affiliation_groups.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/analytics.py</code></td><td>222</td><td>analytics.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/application_templates.py</code></td><td>127</td><td>application_templates.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/applications.py</code></td><td>454</td><td>applications.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/attendances.py</code></td><td>342</td><td>attendances.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/audit_logs.py</code></td><td>79</td><td>audit_logs.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/auth.py</code></td><td>40</td><td>auth.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/closings.py</code></td><td>132</td><td>closings.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/dashboard.py</code></td><td>325</td><td>dashboard.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/departments.py</code></td><td>106</td><td>departments.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/exports.py</code></td><td>312</td><td>exports.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/paid_leaves.py</code></td><td>372</td><td>paid_leaves.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/project_roles.py</code></td><td>119</td><td>project_roles.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/projects.py</code></td><td>87</td><td>projects.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/shift_templates.py</code></td><td>113</td><td>shift_templates.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/shifts.py</code></td><td>562</td><td>shifts.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/system_definitions.py</code></td><td>120</td><td>system_definitions.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/task_categories.py</code></td><td>91</td><td>task_categories.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/users.py</code></td><td>169</td><td>users.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/work_logs.py</code></td><td>115</td><td>work_logs.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンドAPIルーティング & 依存性注入</td><td><code>backend/app/api/endpoints/work_rules.py</code></td><td>109</td><td>work_rules.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/core/config.py</code></td><td>43</td><td>環境変数設定 (Pydantic Settings)</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/core/constants.py</code></td><td>16</td><td>constants.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/core/exceptions.py</code></td><td>34</td><td>exceptions.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/core/messages.py</code></td><td>24</td><td>messages.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/core/security.py</code></td><td>123</td><td>security.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/db/dynamodb.py</code></td><td>152</td><td>DynamoDB非同期セッション・リソース管理 & テーブル初期化</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/db/dynamodb_repo.py</code></td><td>593</td><td>DynamoDBシングルテーブル設計用リポジトリ (CRUD・Query・Scan)</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/db/session.py</code></td><td>22</td><td>session.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド基盤 & DBリポジトリ</td><td><code>backend/app/main.py</code></td><td>91</td><td>FastAPIエントリーポイント & AWS Lambda (Mangum) ハンドラー</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/__init__.py</code></td><td>39</td><td>__init__.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/application.py</code></td><td>52</td><td>application.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/attendance.py</code></td><td>30</td><td>attendance.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/audit_log.py</code></td><td>28</td><td>audit_log.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/base.py</code></td><td>18</td><td>base.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/closing.py</code></td><td>35</td><td>closing.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/leave.py</code></td><td>44</td><td>leave.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/paid_leave.py</code></td><td>25</td><td>paid_leave.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/project.py</code></td><td>94</td><td>project.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/shift.py</code></td><td>41</td><td>shift.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/system_definition.py</code></td><td>12</td><td>system_definition.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/models/user.py</code></td><td>89</td><td>user.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/affiliation_group.py</code></td><td>21</td><td>affiliation_group.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/alert.py</code></td><td>23</td><td>alert.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/application.py</code></td><td>143</td><td>application.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/attendance.py</code></td><td>59</td><td>attendance.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/closing.py</code></td><td>24</td><td>closing.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/dashboard.py</code></td><td>23</td><td>dashboard.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/department.py</code></td><td>25</td><td>department.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/leave.py</code></td><td>50</td><td>leave.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/paid_leave.py</code></td><td>40</td><td>paid_leave.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/project.py</code></td><td>95</td><td>project.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/project_role.py</code></td><td>36</td><td>project_role.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/shift.py</code></td><td>85</td><td>shift.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/shift_template.py</code></td><td>26</td><td>shift_template.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/system_definition.py</code></td><td>26</td><td>system_definition.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/task_category.py</code></td><td>23</td><td>task_category.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/token.py</code></td><td>12</td><td>token.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/user.py</code></td><td>43</td><td>user.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/work_log.py</code></td><td>40</td><td>work_log.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/schemas/work_rule.py</code></td><td>32</td><td>work_rule.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/alert.py</code></td><td>143</td><td>alert.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/attendance_service.py</code></td><td>113</td><td>attendance_service.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/auditor.py</code></td><td>96</td><td>auditor.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/auth.py</code></td><td>35</td><td>auth.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/calculator.py</code></td><td>177</td><td>calculator.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/parser.py</code></td><td>77</td><td>parser.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/project_service.py</code></td><td>238</td><td>project_service.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/side_effect.py</code></td><td>401</td><td>side_effect.py モジュール / 設定ファイル</td></tr>
+<tr><td>バックエンド業務ロジック (Models / Schemas / Services)</td><td><code>backend/app/services/workflow.py</code></td><td>155</td><td>workflow.py モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/app/tests/test_dynamodb.py</code></td><td>49</td><td>DynamoDB非同期セッション・リソース管理 & テーブル初期化</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/mypy.ini</code></td><td>11</td><td>mypy.ini モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/pytest.ini</code></td><td>5</td><td>pytest.ini モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>backend/requirements.txt</code></td><td>21</td><td>requirements.txt モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/README.md</code></td><td>29</td><td>Backend Scripts</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/add_stamp_correction_template.py</code></td><td>45</td><td>add_stamp_correction_template.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/create_tables.py</code></td><td>6</td><td>create_tables.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/init_db.py</code></td><td>19</td><td>init_db.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/init_dynamodb.py</code></td><td>31</td><td>DynamoDB非同期セッション・リソース管理 & テーブル初期化</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/inspect_db.py</code></td><td>35</td><td>inspect_db.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/seed_data.py</code></td><td>275</td><td>seed_data.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/seed_paid_leaves_2025.py</code></td><td>69</td><td>seed_paid_leaves_2025.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/seed_project_skills.py</code></td><td>63</td><td>seed_project_skills.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/seed_shift_templates.py</code></td><td>44</td><td>seed_shift_templates.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/seed_shift_templates_sync.py</code></td><td>41</td><td>seed_shift_templates_sync.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/seed_system_definitions.py</code></td><td>28</td><td>seed_system_definitions.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/verify_database_match.py</code></td><td>218</td><td>verify_database_match.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/scripts/verify_master_ref.py</code></td><td>16</td><td>verify_master_ref.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/conftest.py</code></td><td>74</td><td>conftest.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_api_integration.py</code></td><td>156</td><td>test_api_integration.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_api_smoke.py</code></td><td>16</td><td>test_api_smoke.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_attendance_service.py</code></td><td>98</td><td>test_attendance_service.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_calculator.py</code></td><td>81</td><td>test_calculator.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_integration_shifts.py</code></td><td>86</td><td>test_integration_shifts.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_parser_refactored.py</code></td><td>51</td><td>test_parser_refactored.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_project_service.py</code></td><td>75</td><td>test_project_service.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>backend/tests/test_workflow_side_effects.py</code></td><td>85</td><td>test_workflow_side_effects.py モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>deploy.sh</code></td><td>59</td><td>!/bin/bash</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>design.md</code></td><td>500</td><td>design.md</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>distribution_guide.md</code></td><td>138</td><td>Windows向けアプリケーション配布・起動手順書</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>docker-compose.prod.yml</code></td><td>41</td><td>NOTE: 本番稼働は EC2/常時稼働コンテナではなく、AWS Lambda + DynamoDB + S3 + Cognito の</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docker-compose.yml</code></td><td>28</td><td>docker-compose.yml モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docs/basic_design.md</code></td><td>106</td><td>HRConnect 基本設計書</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docs/database_design.md</code></td><td>291</td><td>HRConnect DB設計書</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docs/development_guide.md</code></td><td>179</td><td>HRConnect 改修指南書 (開発者向けガイド)</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docs/functional_design.md</code></td><td>160</td><td>HRConnect 機能設計書</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docs/maintenance_manual.md</code></td><td>102</td><td>HRConnect メンテナンス手順書</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docs/operation_specs.md</code></td><td>87</td><td>HRConnect 運用仕様書</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>docs/requirements_definition.md</code></td><td>114</td><td>HRConnect 要件定義書</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/.dockerignore</code></td><td>7</td><td>.dockerignore モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/.gitignore</code></td><td>41</td><td>.gitignore モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/Dockerfile</code></td><td>36</td><td>Dockerfile モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/components.json</code></td><td>22</td><td>components.json モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>frontend/e2e/applications.spec.ts</code></td><td>67</td><td>applications.spec.ts モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>frontend/e2e/attendance.spec.ts</code></td><td>51</td><td>attendance.spec.ts モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>frontend/e2e/auth.spec.ts</code></td><td>21</td><td>auth.spec.ts モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>frontend/e2e/db_connection.spec.ts</code></td><td>41</td><td>db_connection.spec.ts モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>frontend/e2e/shifts.spec.ts</code></td><td>25</td><td>shifts.spec.ts モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/eslint.config.mjs</code></td><td>18</td><td>eslint.config.mjs モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/next.config.ts</code></td><td>11</td><td>next.config.ts モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/package.json</code></td><td>64</td><td>package.json モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/playwright.config.ts</code></td><td>47</td><td>playwright.config.ts モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/postcss.config.mjs</code></td><td>7</td><td>postcss.config.mjs モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/admin-applications/page.tsx</code></td><td>570</td><td>画面UIコンポーネント (admin-applications 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/admin-attendances/page.tsx</code></td><td>52</td><td>画面UIコンポーネント (admin-attendances 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/admin-dashboard/page.tsx</code></td><td>222</td><td>画面UIコンポーネント (admin-dashboard 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/affiliation-groups/page.tsx</code></td><td>258</td><td>画面UIコンポーネント (affiliation-groups 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/analytics/page.tsx</code></td><td>151</td><td>画面UIコンポーネント (analytics 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/application-types/page.tsx</code></td><td>564</td><td>画面UIコンポーネント (application-types 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/approvals/page.tsx</code></td><td>177</td><td>画面UIコンポーネント (approvals 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/attendance-categories/page.tsx</code></td><td>351</td><td>画面UIコンポーネント (attendance-categories 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/audit-logs/page.tsx</code></td><td>144</td><td>画面UIコンポーネント (audit-logs 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/departments/page.tsx</code></td><td>328</td><td>画面UIコンポーネント (departments 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/exports/page.tsx</code></td><td>261</td><td>画面UIコンポーネント (exports 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/layout.tsx</code></td><td>13</td><td>layout.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/monthly-shifts/page.tsx</code></td><td>341</td><td>画面UIコンポーネント (monthly-shifts 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/paid-leaves/page.tsx</code></td><td>499</td><td>画面UIコンポーネント (paid-leaves 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/project-roles/page.tsx</code></td><td>278</td><td>画面UIコンポーネント (project-roles 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/projects/page.tsx</code></td><td>651</td><td>画面UIコンポーネント (projects 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/shifts/page.tsx</code></td><td>301</td><td>画面UIコンポーネント (shifts 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/system-definitions/page.tsx</code></td><td>244</td><td>画面UIコンポーネント (system-definitions 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/task-categories/page.tsx</code></td><td>260</td><td>画面UIコンポーネント (task-categories 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(admin)/users/page.tsx</code></td><td>584</td><td>画面UIコンポーネント (users 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(auth)/login/page.tsx</code></td><td>95</td><td>画面UIコンポーネント (login 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(leader)/layout.tsx</code></td><td>13</td><td>layout.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(leader)/project-assignments/page.tsx</code></td><td>291</td><td>画面UIコンポーネント (project-assignments 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/applications/page.tsx</code></td><td>748</td><td>画面UIコンポーネント (applications 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/calendar/page.tsx</code></td><td>431</td><td>画面UIコンポーネント (calendar 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/daily-report/page.tsx</code></td><td>576</td><td>画面UIコンポーネント (daily-report 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/dashboard/DashboardClient.tsx</code></td><td>248</td><td>DashboardClient.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/dashboard/page.tsx</code></td><td>56</td><td>画面UIコンポーネント (dashboard 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/layout.tsx</code></td><td>13</td><td>layout.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/monthly-reports/page.tsx</code></td><td>234</td><td>画面UIコンポーネント (monthly-reports 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/settings/page.tsx</code></td><td>189</td><td>画面UIコンポーネント (settings 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/skills-portfolio/page.tsx</code></td><td>324</td><td>画面UIコンポーネント (skills-portfolio 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/(user)/stamp/page.tsx</code></td><td>296</td><td>画面UIコンポーネント (stamp 画面)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/api/auth/login/route.ts</code></td><td>51</td><td>Next.js Route Handler (BFF API / 認証プロキシ)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/api/auth/logout/route.ts</code></td><td>8</td><td>Next.js Route Handler (BFF API / 認証プロキシ)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/api/v1/[...path]/route.ts</code></td><td>83</td><td>Next.js Route Handler (BFF API / 認証プロキシ)</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/globals.css</code></td><td>152</td><td>globals.css モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/layout.tsx</code></td><td>45</td><td>layout.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンド画面 (Next.js App Router / BFF)</td><td><code>frontend/src/app/page.tsx</code></td><td>5</td><td>画面UIコンポーネント (app 画面)</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ShiftRequestModal.tsx</code></td><td>204</td><td>ShiftRequestModal.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/StampCorrectionModal.tsx</code></td><td>239</td><td>StampCorrectionModal.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/admin/attendances/AttendanceFilter.tsx</code></td><td>60</td><td>AttendanceFilter.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/admin/attendances/AttendanceTable.tsx</code></td><td>109</td><td>AttendanceTable.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/admin/shifts/HolidayGenerator.tsx</code></td><td>119</td><td>HolidayGenerator.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/admin/shifts/ShiftDialog.tsx</code></td><td>301</td><td>ShiftDialog.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/admin/shifts/ShiftFilters.tsx</code></td><td>98</td><td>ShiftFilters.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/admin/shifts/ShiftGenerator.tsx</code></td><td>210</td><td>ShiftGenerator.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/admin/shifts/TemplateManager.tsx</code></td><td>103</td><td>TemplateManager.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/layout/app-layout.tsx</code></td><td>36</td><td>app-layout.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/layout/bottom-navbar.tsx</code></td><td>52</td><td>bottom-navbar.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/layout/page-header.tsx</code></td><td>42</td><td>page-header.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/layout/sidebar.tsx</code></td><td>290</td><td>sidebar.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/theme-provider.tsx</code></td><td>11</td><td>theme-provider.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/alert-dialog.tsx</code></td><td>141</td><td>alert-dialog.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/alert.tsx</code></td><td>66</td><td>alert.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/avatar.tsx</code></td><td>53</td><td>avatar.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/badge.tsx</code></td><td>46</td><td>badge.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/button.tsx</code></td><td>61</td><td>button.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/card.tsx</code></td><td>92</td><td>card.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/checkbox.tsx</code></td><td>32</td><td>checkbox.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/date-input.tsx</code></td><td>81</td><td>date-input.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/dialog.tsx</code></td><td>143</td><td>dialog.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/dropdown-menu.tsx</code></td><td>257</td><td>dropdown-menu.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/input.tsx</code></td><td>21</td><td>input.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/label.tsx</code></td><td>26</td><td>label.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/select.tsx</code></td><td>187</td><td>select.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/sheet.tsx</code></td><td>140</td><td>sheet.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/skeleton.tsx</code></td><td>13</td><td>skeleton.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/sonner.tsx</code></td><td>40</td><td>sonner.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/switch.tsx</code></td><td>31</td><td>switch.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/table.tsx</code></td><td>116</td><td>table.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/tabs.tsx</code></td><td>55</td><td>tabs.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/textarea.tsx</code></td><td>18</td><td>textarea.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/ui/tooltip.tsx</code></td><td>61</td><td>tooltip.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/components/user-menu.tsx</code></td><td>82</td><td>user-menu.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/context/AuthContext.tsx</code></td><td>109</td><td>AuthContext.tsx モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/hooks/useAdminAttendances.ts</code></td><td>101</td><td>useAdminAttendances.ts モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/hooks/useShiftManagement.ts</code></td><td>76</td><td>useShiftManagement.ts モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/hooks/useShiftMutations.ts</code></td><td>101</td><td>useShiftMutations.ts モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/lib/constants.ts</code></td><td>3</td><td>constants.ts モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/lib/ui_text.ts</code></td><td>38</td><td>ui_text.ts モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/lib/utils.ts</code></td><td>25</td><td>utils.ts モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/src/middleware.ts</code></td><td>46</td><td>middleware.ts モジュール / 設定ファイル</td></tr>
+<tr><td>フロントエンドUI部品 & 状態管理 & 共通関数</td><td><code>frontend/src/types/index.ts</code></td><td>62</td><td>index.ts モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/tsconfig.json</code></td><td>34</td><td>tsconfig.json モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/vitest.config.ts</code></td><td>15</td><td>vitest.config.ts モジュール / 設定ファイル</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>frontend/vitest.setup.ts</code></td><td>1</td><td>vitest.setup.ts モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>infra/bin/infra.ts</code></td><td>20</td><td>infra.ts モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>infra/cdk.json</code></td><td>29</td><td>cdk.json モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>infra/lib/hrconnect-serverless-stack.ts</code></td><td>214</td><td>AWS CDK サーバーレススタック定義 (DynamoDB/S3/Cognito/Lambda/API Gateway)</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>infra/package.json</code></td><td>24</td><td>package.json モジュール / 設定ファイル</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>infra/tsconfig.json</code></td><td>24</td><td>tsconfig.json モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>scripts/create_lightweight_zip.sh</code></td><td>50</td><td>!/bin/bash</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>scripts/find_unused_files.py</code></td><td>214</td><td>find_unused_files.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>scripts/generate_complete_system_specs.py</code></td><td>655</td><td>generate_complete_system_specs.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>scripts/generate_docs.py</code></td><td>376</td><td>generate_docs.py モジュール / 設定ファイル</td></tr>
+<tr><td>運用スクリプト & 結合・単体テスト</td><td><code>scripts/restart_backend.sh</code></td><td>9</td><td>!/bin/bash</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>system_specification_and_improvements.md</code></td><td>53</td><td>HRConnect 実装改善ポイント（AIエージェント向け）</td></tr>
+<tr><td>ドキュメント & プロジェクト共通設定</td><td><code>system_structure_and_specs.md</code></td><td>488</td><td>design.md</td></tr>
+<tr><td>インフラ & AWSサーバーレス構成</td><td><code>template.yaml</code></td><td>181</td><td>============================================================</td></tr>
+</tbody></table></div>
+  </div>
+
+  <footer>
+    <p>HRConnect Lightweight - Full System Specification Documentation</p>
+    <p>© 2026 HRConnect. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -85,3 +85,7 @@ async def startup_event():
     except Exception as e:
         print(f"Failed to initialize DynamoDB table: {e}")
 
+from mangum import Mangum
+
+# AWS Lambda Handler
+handler = Mangum(app, lifespan="off")

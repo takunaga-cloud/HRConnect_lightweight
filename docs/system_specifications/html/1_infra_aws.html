@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>インフラ & AWS - HRConnect 仕様書</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.75;
+      color: var(--text);
+      background-color: var(--bg-main);
+    }
+    /* Top Navigation Tab Bar */
+    .header-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      padding: 0 1rem;
+      gap: 0.25rem;
+    }
+    .tab {
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--primary); }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #eff6ff;
+    }
+    .portal-link {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #0369a1;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0 0.5rem;
+    }
+    .portal-link:hover { text-decoration: underline; }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    h2 {
+      font-size: 1.4rem;
+      color: #1e293b;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    h3 {
+      font-size: 1.15rem;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #334155;
+    }
+    li { margin-bottom: 0.35rem; }
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    tr:nth-child(even) { background: #fbfcfe; }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    footer {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <div class="nav-container">
+      <a href="00_full_file_index.html" class="tab ">全ファイル総索引</a>
+<a href="1_infra_aws.html" class="tab active">インフラ & AWS</a>
+<a href="2_backend_core_db.html" class="tab ">基盤 & DB</a>
+<a href="3_backend_api.html" class="tab ">APIエンドポイント</a>
+<a href="4_backend_models_services.html" class="tab ">モデル・スキーマ・サービス</a>
+<a href="5_frontend_pages.html" class="tab ">フロントエンド画面</a>
+<a href="6_frontend_components.html" class="tab ">フロントエンド部品</a>
+<a href="7_scripts_tests.html" class="tab ">スクリプト & テスト</a>
+<a href="8_docs_and_others.html" class="tab ">ドキュメント & 設定</a>
+      <a href="../index.html" class="portal-link">🔍 インタラクティブポータルへ</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>インフラ & AWSサーバーレス構成 仕様詳細書</h1>
+<p>本ドキュメントは、HRConnectにおける「インフラ & AWSサーバーレス構成」カテゴリに属する全ファイルの仕様・構成・詳細を網羅した資料です。</p>
+<p><strong>対象ファイル数:</strong> 11 ファイル</p>
+<hr />
+<h2>掲載ファイル一覧</h2>
+<ul><li><a href="#-env-production-template"><code>.env.production.template</code></a> : .env.production.template モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#amplify-yml"><code>amplify.yml</code></a> : AWS Amplify Hosting CI/CDビルド設定</li></ul>
+<ul><li><a href="#backend-Dockerfile-lambda"><code>backend/Dockerfile.lambda</code></a> : Dockerfile.lambda モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#deploy-sh"><code>deploy.sh</code></a> : !/bin/bash</li></ul>
+<ul><li><a href="#docker-compose-prod-yml"><code>docker-compose.prod.yml</code></a> : NOTE: 本番稼働は EC2/常時稼働コンテナではなく、AWS Lambda + DynamoDB + S3 + Cognito の</li></ul>
+<ul><li><a href="#infra-bin-infra-ts"><code>infra/bin/infra.ts</code></a> : infra.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#infra-cdk-json"><code>infra/cdk.json</code></a> : cdk.json モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#infra-lib-hrconnect-serverless-stack-ts"><code>infra/lib/hrconnect-serverless-stack.ts</code></a> : AWS CDK サーバーレススタック定義 (DynamoDB/S3/Cognito/Lambda/API Gateway)</li></ul>
+<ul><li><a href="#infra-package-json"><code>infra/package.json</code></a> : package.json モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#infra-tsconfig-json"><code>infra/tsconfig.json</code></a> : tsconfig.json モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#template-yaml"><code>template.yaml</code></a> : ============================================================</li></ul>
+<hr />
+<h2><span id="-env-production-template"></span> .env.production.template</h2>
+<ul><li><strong>ファイル概要:</strong> .env.production.template モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 27 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# Production Environment Variables Template (AWS Serverless Architecture)
+# アイドル時維持コスト $0 のサーバーレス構成用環境変数テンプレート
+
+# Project Base
+PROJECT_NAME=&quot;HR-Connect Production&quot;
+SECRET_KEY=&quot;GENERATED_STRONG_SECRET_KEY&quot;
+
+# Authentication (Amazon Cognito)
+COGNITO_USER_POOL_ID=&quot;ap-northeast-1_xxxxxxxxx&quot;
+COGNITO_CLIENT_ID=&quot;xxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+COGNITO_REGION=&quot;ap-northeast-1&quot;
+
+# Database (Amazon DynamoDB - オンデマンド課金・サーバーレス)
+DYNAMODB_TABLE_NAME=&quot;HRConnectTable-prod&quot;
+# Lambda環境下ではローカル用エンドポイントURLは不要 (NoneでAWS本番DynamoDBに自動接続)
+</code></pre>
+<hr />
+<h2><span id="amplify-yml"></span> amplify.yml</h2>
+<ul><li><strong>ファイル概要:</strong> AWS Amplify Hosting CI/CDビルド設定</li></ul>
+<ul><li><strong>行数:</strong> 20 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd frontend
+        - pnpm install
+    build:
+      commands:
+        - env | grep -e NEXT_PUBLIC_ &gt;&gt; .env.production
+        - pnpm build
+  artifacts:
+    baseDirectory: frontend/.next
+    files:
+      - &#x27;**/*&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-Dockerfile-lambda"></span> backend/Dockerfile.lambda</h2>
+<ul><li><strong>ファイル概要:</strong> Dockerfile.lambda モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 15 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+FROM public.ecr.aws/lambda/python:3.11
+
+# Set working directory to Lambda task root
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# Install python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application source
+COPY app/ ./app/
+
+# Set AWS Lambda handler
+CMD [&quot;app.main.handler&quot;]
+
+</code></pre>
+<hr />
+<h2><span id="deploy-sh"></span> deploy.sh</h2>
+<ul><li><strong>ファイル概要:</strong> !/bin/bash</li></ul>
+<ul><li><strong>行数:</strong> 59 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+#!/bin/bash
+
+set -e
+
+# AWS CLIとCDK CLIがインストールされていることを確認
+if ! command -v aws &amp;&gt; /dev/null
+then
+    echo &quot;AWS CLI がインストールされていません。インストールしてください。&quot;
+    exit 1
+fi
+
+if ! command -v cdk &amp;&gt; /dev/null
+then
+    echo &quot;AWS CDK CLI がインストールされていません。インストールしてください。&quot;
+    exit 1
+</code></pre>
+<hr />
+<h2><span id="docker-compose-prod-yml"></span> docker-compose.prod.yml</h2>
+<ul><li><strong>ファイル概要:</strong> NOTE: 本番稼働は EC2/常時稼働コンテナではなく、AWS Lambda + DynamoDB + S3 + Cognito の</li></ul>
+<ul><li><strong>行数:</strong> 41 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# NOTE: 本番稼働は EC2/常時稼働コンテナではなく、AWS Lambda + DynamoDB + S3 + Cognito の
+# 完全サーバーレス構成（アイドル時固定費 $0）が推奨されます。
+# デプロイには `./deploy.sh` (AWS CDK) または AWS SAM / AWS Amplify を使用してください。
+# 本ファイルは、コンテナ環境でのステージング・動作確認用として保持しています。
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - DYNAMODB_TABLE_NAME=${DYNAMODB_TABLE_NAME:-HRConnectTable-prod}
+      - AWS_REGION=${AWS_REGION:-ap-northeast-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+</code></pre>
+<hr />
+<h2><span id="infra-bin-infra-ts"></span> infra/bin/infra.ts</h2>
+<ul><li><strong>ファイル概要:</strong> infra.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 20 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>aws-cdk-lib</code>, <code>../lib/hrconnect-serverless-stack</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+#!/usr/bin/env node
+import &#x27;source-map-support/register&#x27;;
+import * as cdk from &#x27;aws-cdk-lib&#x27;;
+import { HRConnectServerlessStack } from &#x27;../lib/hrconnect-serverless-stack&#x27;;
+
+const app = new cdk.App();
+
+const stage = app.node.tryGetContext(&#x27;stage&#x27;) || &#x27;prod&#x27;;
+
+new HRConnectServerlessStack(app, `HRConnectServerlessStack-${stage}`, {
+  stage: stage,
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION || &#x27;ap-northeast-1&#x27;,
+  },
+</code></pre>
+<hr />
+<h2><span id="infra-cdk-json"></span> infra/cdk.json</h2>
+<ul><li><strong>ファイル概要:</strong> cdk.json モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 29 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+{
+  &quot;app&quot;: &quot;npx ts-node --prefer-ts-exts bin/infra.ts&quot;,
+  &quot;watch&quot;: {
+    &quot;include&quot;: [
+      &quot;**&quot;
+    ],
+    &quot;exclude&quot;: [
+      &quot;README.md&quot;,
+      &quot;cdk*.json&quot;,
+      &quot;**/*.d.ts&quot;,
+      &quot;**/*.js&quot;,
+      &quot;tsconfig.json&quot;,
+      &quot;package*.json&quot;,
+      &quot;yarn.lock&quot;,
+      &quot;node_modules&quot;,
+</code></pre>
+<hr />
+<h2><span id="infra-lib-hrconnect-serverless-stack-ts"></span> infra/lib/hrconnect-serverless-stack.ts</h2>
+<ul><li><strong>ファイル概要:</strong> AWS CDK サーバーレススタック定義 (DynamoDB/S3/Cognito/Lambda/API Gateway)</li></ul>
+<ul><li><strong>行数:</strong> 214 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>型定義 / インターフェース</h3>
+<ul><li><code>HRConnectStackProps</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>constructs</code>, <code>aws-cdk-lib/aws-cognito</code>, <code>aws-cdk-lib</code>, <code>aws-cdk-lib/aws-iam</code>, <code>aws-cdk-lib/aws-apigatewayv2-integrations</code>, <code>aws-cdk-lib/aws-lambda</code>, <code>path</code>, <code>aws-cdk-lib/aws-s3</code>, <code>aws-cdk-lib/aws-apigatewayv2</code>, <code>aws-cdk-lib/aws-dynamodb</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import * as cdk from &#x27;aws-cdk-lib&#x27;;
+import { Construct } from &#x27;constructs&#x27;;
+import * as dynamodb from &#x27;aws-cdk-lib/aws-dynamodb&#x27;;
+import * as s3 from &#x27;aws-cdk-lib/aws-s3&#x27;;
+import * as cognito from &#x27;aws-cdk-lib/aws-cognito&#x27;;
+import * as lambda from &#x27;aws-cdk-lib/aws-lambda&#x27;;
+import * as apigwv2 from &#x27;aws-cdk-lib/aws-apigatewayv2&#x27;;
+import * as apigwv2_integrations from &#x27;aws-cdk-lib/aws-apigatewayv2-integrations&#x27;;
+import * as iam from &#x27;aws-cdk-lib/aws-iam&#x27;;
+import * as path from &#x27;path&#x27;;
+
+export interface HRConnectStackProps extends cdk.StackProps {
+  stage?: string;
+}
+
+</code></pre>
+<hr />
+<h2><span id="infra-package-json"></span> infra/package.json</h2>
+<ul><li><strong>ファイル概要:</strong> package.json モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 24 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+{
+  &quot;name&quot;: &quot;hrconnect-infra&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;AWS CDK Serverless Infrastructure for HRConnect&quot;,
+  &quot;bin&quot;: {
+    &quot;infra&quot;: &quot;bin/infra.js&quot;
+  },
+  &quot;scripts&quot;: {
+    &quot;build&quot;: &quot;tsc&quot;,
+    &quot;watch&quot;: &quot;tsc -w&quot;,
+    &quot;cdk&quot;: &quot;cdk&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;@types/node&quot;: &quot;^20.11.0&quot;,
+    &quot;aws-cdk&quot;: &quot;^2.130.0&quot;,
+</code></pre>
+<hr />
+<h2><span id="infra-tsconfig-json"></span> infra/tsconfig.json</h2>
+<ul><li><strong>ファイル概要:</strong> tsconfig.json モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 24 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;commonjs&quot;,
+    &quot;lib&quot;: [&quot;es2022&quot;],
+    &quot;declaration&quot;: true,
+    &quot;strict&quot;: true,
+    &quot;noImplicitAny&quot;: true,
+    &quot;strictNullChecks&quot;: true,
+    &quot;noImplicitThis&quot;: true,
+    &quot;alwaysStrict&quot;: true,
+    &quot;noUnusedLocals&quot;: false,
+    &quot;noUnusedParameters&quot;: false,
+    &quot;noImplicitReturns&quot;: true,
+    &quot;noFallthroughCasesInSwitch&quot;: false,
+</code></pre>
+<hr />
+<h2><span id="template-yaml"></span> template.yaml</h2>
+<ul><li><strong>ファイル概要:</strong> ============================================================</li></ul>
+<ul><li><strong>行数:</strong> 181 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> インフラ & AWSサーバーレス構成</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+AWSTemplateFormatVersion: &#x27;2010-09-09&#x27;
+Transform: AWS::Serverless-2016-10-31
+Description: &gt;
+  HRConnect Fully Serverless Infrastructure
+  FastAPI on AWS Lambda, DynamoDB (Pay-Per-Request), Amazon S3, Amazon Cognito, and API Gateway HTTP API.
+  Idle Running Cost: $0/month.
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    Description: Deployment stage (dev, stg, prod)
+
+Globals:
+  Function:
+</code></pre>
+<hr />
+  </div>
+
+  <footer>
+    <p>HRConnect Lightweight - Full System Specification Documentation</p>
+    <p>© 2026 HRConnect. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

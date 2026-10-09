@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRConnect - AWSサーバーレス再構成 & デプロイ仕様書</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --accent: #0284c7;
+      --code-bg: #0f172a;
+      --code-text: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", sans-serif;
+      line-height: 1.7;
+      color: var(--text-main);
+      background-color: var(--bg-main);
+      padding: 2.5rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+    }
+
+    .badge-cost {
+      display: inline-block;
+      background: #dcfce7;
+      color: #15803d;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      margin-top: 0.75rem;
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      color: #1e293b;
+      margin-top: 2.5rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+
+    /* Diagram Section */
+    .diagram-container {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fbfcfe;
+    }
+
+    .highlight-cell {
+      background-color: #f0fdf4 !important;
+      font-weight: bold;
+      color: #15803d;
+    }
+
+    .cost-reduction {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    /* Code Blocks */
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+    }
+
+    code {
+      font-family: inherit;
+    }
+
+    .inline-code {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+
+    /* Feature Lists */
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-card h4 {
+      font-size: 1.05rem;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .file-path {
+      font-size: 0.85rem;
+      color: var(--primary);
+      background: #eff6ff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+      color: #334155;
+    }
+
+    .step-box {
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .step-title {
+      font-weight: 700;
+      color: #6b21a8;
+      margin-bottom: 0.5rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+  </style>
+  <!-- Mermaid.js for Rendering Architecture Diagram -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>HRConnect - AWSサーバーレス再構成 & デプロイ仕様書</h1>
+      <p class="subtitle">常時起動EC2/RDSを完全廃止し、待機コスト $0 の従量課金アーキテクチャへの刷新</p>
+      <span class="badge-cost">✔ アイドル時固定費: 0円 / 月（完全サーバーレス構成）</span>
+    </header>
+
+    <section>
+      <p>
+        本ドキュメントは、HRConnectにおける<strong>常時稼働サーバー（EC2）およびリレーショナルデータベース（RDS）を完全撤廃</strong>し、
+        アクセスが発生した瞬間のみミリ秒単位でオンデマンド起動する<strong>「AWS完全サーバーレス構成（DynamoDB + AWS Lambda + API Gateway HTTP API + S3 + Cognito + Amplify）」</strong>への再構成内容と、そのデプロイ手順をまとめたものです。
+      </p>
+    </section>
+
+    <!-- SECTION 1 -->
+    <section>
+      <h2>1. サーバーレス再構成の全体アーキテクチャ</h2>
+      <p>
+        すべてのコンポーネントがイベント駆動（リクエストベース）で動作するため、誰も利用していない夜間や休日などの待機時コストは<strong>完全に$0（0円）</strong>となります。
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+graph TD
+    User((ユーザー / ブラウザ))
+
+    subgraph "Frontend (Serverless)"
+        Amplify[AWS Amplify Hosting / CloudFront<br>Next.js App Router (待機時 $0)]
+    end
+
+    subgraph "Auth (Managed Free Tier)"
+        Cognito[Amazon Cognito User Pool<br>(50,000 MAUまで完全無料)]
+    end
+
+    subgraph "Backend API (起動時のみオンデマンド実行)"
+        APIGw[Amazon API Gateway HTTP API v2<br>($1.00 / 100万リクエスト)]
+        Lambda[AWS Lambda (FastAPI + Mangum)<br>(月100万リクエスト無料枠)]
+    end
+
+    subgraph "Data & Storage (Serverless)"
+        DynamoDB[(Amazon DynamoDB<br>PAY_PER_REQUEST / オンデマンド<br>25GBまで無料枠)]
+        S3[Amazon S3<br>帳票・ファイル保管 / 30日自動削除]
+    end
+
+    User -->|HTTPS| Amplify
+    Amplify -->|認証| Cognito
+    Amplify -->|APIリクエスト| APIGw
+    APIGw -->|リクエスト時のみ起動| Lambda
+    Lambda -->|IAMロール認証| DynamoDB
+    Lambda -->|Presigned URL| S3
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section>
+      <h2>2. コスト比較（EC2常時稼働 vs 本サーバーレス構成）</h2>
+      <p>
+        常時起動型インスタンスとサーバーレス型の月額試算比較です。中小規模運用（従業員数十人〜100人規模）であれば、AWS無料利用枠内にほぼ収まり、月額数十円〜数百円未満で運用可能です。
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>構成要素</th>
+            <th>従来のEC2 + RDS構成 (月額目安)</th>
+            <th>今回のサーバーレス構成 (月額目安)</th>
+            <th>削減効果</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>サーバー (Compute)</strong></td>
+            <td>EC2 (t3.medium等) + ALB: <strong>約 $50〜$60/月</strong></td>
+            <td class="highlight-cell">AWS Lambda: <strong>$0〜$0.2/月</strong> (月100万回永続無料枠)</td>
+            <td class="cost-reduction">99%以上削減 (待機時 $0)</td>
+          </tr>
+          <tr>
+            <td><strong>データベース (DB)</strong></td>
+            <td>RDS PostgreSQL: <strong>約 $30〜$50/月</strong></td>
+            <td class="highlight-cell">Amazon DynamoDB: <strong>$0/月</strong> (25GB永続無料枠)</td>
+            <td class="cost-reduction">100%削減 (待機時 $0)</td>
+          </tr>
+          <tr>
+            <td><strong>認証 (Auth)</strong></td>
+            <td>自前認証サーバー (EC2相乗り)</td>
+            <td class="highlight-cell">Amazon Cognito: <strong>$0/月</strong> (50,000人無料枠)</td>
+            <td class="cost-reduction">完全無料</td>
+          </tr>
+          <tr>
+            <td><strong>フロントエンド</strong></td>
+            <td>EC2 Node.jsプロセス常時稼働</td>
+            <td class="highlight-cell">AWS Amplify Hosting: <strong>$0〜$0.5/月</strong></td>
+            <td class="cost-reduction">大幅削減 (待機時 $0)</td>
+          </tr>
+          <tr>
+            <td><strong>API Gateway</strong></td>
+            <td>ALB (Application Load Balancer): <strong>約 $20/月</strong></td>
+            <td class="highlight-cell">HTTP API (v2): <strong>約 $0〜$0.1/月</strong> ($1.00/100万req)</td>
+            <td class="cost-reduction">大幅削減</td>
+          </tr>
+          <tr>
+            <td><strong>合計固定費</strong></td>
+            <td><strong>約 $80〜$110/月 (約1.2万〜1.7万円/月)</strong></td>
+            <td class="highlight-cell"><strong>ほぼ $0 / 月 (実質0円〜数十円程度)</strong></td>
+            <td class="cost-reduction"><strong>最小コスト運用実現</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section>
+      <h2>3. 主な変更点と実装内容</h2>
+
+      <!-- ① Backend -->
+      <div class="feature-card">
+        <h4>① バックエンド（FastAPI on AWS Lambda）</h4>
+        <ul>
+          <li>
+            <strong>Mangumアダプターの導入:</strong> 
+            <span class="file-path">backend/app/main.py</span><br>
+            FastAPIアプリケーションをAWS Lambdaのイベントハンドラー（<code>handler = Mangum(app, lifespan="off")</code>）としてエクスポートし、サーバーレス実行を可能にしました。
+          </li>
+          <li>
+            <strong>DynamoDBセッション・クライアントの最適化:</strong> 
+            <span class="file-path">backend/app/db/dynamodb.py</span><br>
+            Lambda実行ロール（IAM Role）の認証情報を自動解決する安全なパラメータ生成ロジックを実装。ローカル環境（DynamoDB Local）と本番AWS環境を同一コードでシームレスに切り替えられるようにしました。
+          </li>
+          <li>
+            <strong>Lambda用コンテナイメージの作成:</strong> 
+            <span class="file-path">backend/Dockerfile.lambda</span><br>
+            AWS公式の <code>public.ecr.aws/lambda/python:3.11</code> をベースにしたDockerイメージを新規作成。PandasやOpenPyXLなど大容量ライブラリのZip容量制限（250MB）を完全に回避しました。
+          </li>
+          <li>
+            <strong>DynamoDB初期化・シードスクリプトの追加:</strong> 
+            <span class="file-path">backend/scripts/init_dynamodb.py</span><br>
+            AWS上のDynamoDBテーブルをワンコマンドで初期化し、管理者・一般ユーザーアカウントを投入するスクリプトを作成しました。
+          </li>
+        </ul>
+      </div>
+
+      <!-- ② Infra -->
+      <div class="feature-card">
+        <h4>② インフラコード（AWS CDK & AWS SAM 両対応）</h4>
+        <ul>
+          <li>
+            <strong>AWS CDK (TypeScript):</strong> 
+            <span class="file-path">infra/lib/hrconnect-serverless-stack.ts</span>, <span class="file-path">infra/bin/infra.ts</span><br>
+            DynamoDB（オンデマンド・シングルテーブル設計）、S3（30日失効ライフサイクル）、Cognito User Pool & Client、Lambdaコンテナ関数、API Gateway HTTP API (v2) を包括するCDKプロジェクトを新規構築しました。
+          </li>
+          <li>
+            <strong>AWS SAM テンプレート:</strong> 
+            <span class="file-path">template.yaml</span><br>
+            <code>sam build</code> & <code>sam deploy</code> でデプロイを完結させたいケースに対応するため、同等リソースを定義したSAMテンプレートも同梱しました。
+          </li>
+        </ul>
+      </div>
+
+      <!-- ③ Frontend -->
+      <div class="feature-card">
+        <h4>③ フロントエンド（Next.js App Router）</h4>
+        <ul>
+          <li>
+            <strong>AWS Amplify Hosting 設定:</strong> 
+            <span class="file-path">amplify.yml</span><br>
+            Next.jsのApp Router / SSR をAWSマネージド環境でサーバーレスに自動ビルド＆配信できるCI/CD設定ファイルを作成しました。
+          </li>
+        </ul>
+      </div>
+
+      <!-- ④ Scripts & Config -->
+      <div class="feature-card">
+        <h4>④ デプロイスクリプト & 環境設定テンプレート</h4>
+        <ul>
+          <li>
+            <strong>デプロイスクリプトの更新:</strong> 
+            <span class="file-path">deploy.sh</span><br>
+            CDKによるサーバーレスデプロイを実行し、完了後に必要な環境変数をわかりやすくガイドするよう全面改修しました。
+          </li>
+          <li>
+            <strong>本番環境変数テンプレートの更新:</strong> 
+            <span class="file-path">.env.production.template</span><br>
+            古いPostgreSQL/EC2用設定を全撤廃し、DynamoDB/Lambda/Cognito/S3用のテンプレートに刷新しました。
+          </li>
+          <li>
+            <strong>Docker Composeの注記・構成更新:</strong> 
+            <span class="file-path">docker-compose.prod.yml</span><br>
+            本番はサーバーレス推奨である旨を明記し、コンテナ内ステージング用途向けにDynamoDB設定へ更新しました。
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section>
+      <h2>4. デプロイ手順</h2>
+
+      <div class="step-box">
+        <div class="step-title">パターンA: AWS CDK を使用してデプロイする場合（推奨）</div>
+        <p>1. デプロイスクリプトを実行して、CDKインフラデプロイとフロントエンドビルドを行います：</p>
+        <pre><code>./deploy.sh</code></pre>
+
+        <p>2. デプロイ完了後に出力された <code>ApiEndpoint</code> や <code>CognitoUserPoolId</code> などを確認し、DynamoDBに初期ユーザーデータを投入します：</p>
+        <pre><code>cd backend
+python3 -m scripts.init_dynamodb</code></pre>
+      </div>
+
+      <div class="step-box">
+        <div class="step-title">パターンB: AWS SAM を使用してデプロイする場合</div>
+        <p>SAM CLIを使ってガイド付き対話モードで即座にビルド・デプロイできます：</p>
+        <pre><code># ビルドの実行
+sam build
+
+# デプロイの実行（対話式でパラメータ設定）
+sam deploy --guided</code></pre>
+      </div>
+
+      <div class="step-box">
+        <div class="step-title">パターンC: フロントエンドのホスティング（AWS Amplify Hosting）</div>
+        <ol style="margin-left: 1.5rem; color: #334155;">
+          <li>AWSマネジメントコンソールで <strong>AWS Amplify Hosting</strong> を開きます。</li>
+          <li>GitHub等のリポジトリを接続すると、ルートにある <span class="inline-code">amplify.yml</span> が自動的に読み込まれます。</li>
+          <li>環境変数に <code>NEXT_PUBLIC_BACKEND_URL</code>（上記で作成された API Gateway のエンドポイントURL）を設定して保存・デプロイします。</li>
+          <li>数分で全世界CDN配信とオンデマンドSSRが有効化されたフロントエンドが公開されます。</li>
+        </ol>
+      </div>
+    </section>
+
+    <footer>
+      <p>HRConnect Lightweight - AWS Serverless Deployment Architecture Document</p>
+      <p>© 2026 HRConnect. All rights reserved.</p>
+    </footer>
+  </div>
+
+</body>
+</html>
+

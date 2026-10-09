@@ -1,0 +1,181 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  HRConnect Fully Serverless Infrastructure
+  FastAPI on AWS Lambda, DynamoDB (Pay-Per-Request), Amazon S3, Amazon Cognito, and API Gateway HTTP API.
+  Idle Running Cost: $0/month.
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    Description: Deployment stage (dev, stg, prod)
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+
+Resources:
+  # ============================================================
+  # 1. Amazon DynamoDB Table (Pay-Per-Request: $0 Idle Cost)
+  # ============================================================
+  HRConnectDynamoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "HRConnectTable-${Stage}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: SK
+              KeyType: HASH
+            - AttributeName: PK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  # ============================================================
+  # 2. Amazon S3 Storage Bucket (Reports & Exports)
+  # ============================================================
+  HRConnectStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "hrconnect-storage-${AWS::AccountId}-${AWS::Region}-${Stage}"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireTempExports
+            Status: Enabled
+            ExpirationInDays: 30
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [GET, PUT, POST, HEAD]
+            AllowedOrigins: ['*']
+
+  # ============================================================
+  # 3. Amazon Cognito User Pool & Client
+  # ============================================================
+  HRConnectUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "hrconnect-userpool-${Stage}"
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: false
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: false
+
+  HRConnectUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref HRConnectUserPool
+      ClientName: !Sub "hrconnect-web-client-${Stage}"
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+
+  # ============================================================
+  # 4. Amazon API Gateway HTTP API (Low latency & Low cost)
+  # ============================================================
+  HRConnectHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - "*"
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - OPTIONS
+
+  # ============================================================
+  # 5. AWS Lambda Backend Function (FastAPI + Mangum)
+  # ============================================================
+  HRConnectBackendFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref HRConnectDynamoTable
+          AWS_S3_BUCKET: !Ref HRConnectStorageBucket
+          COGNITO_USER_POOL_ID: !Ref HRConnectUserPool
+          COGNITO_CLIENT_ID: !Ref HRConnectUserPoolClient
+          COGNITO_REGION: !Ref "AWS::Region"
+          SECRET_KEY: !Sub "hrconnect-secure-key-${AWS::AccountId}"
+          API_V1_STR: "/api/v1"
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref HRConnectDynamoTable
+        - S3CrudPolicy:
+            BucketName: !Ref HRConnectStorageBucket
+      Events:
+        ProxyApiRoot:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HRConnectHttpApi
+            Path: /{proxy+}
+            Method: ANY
+        RootApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HRConnectHttpApi
+            Path: /
+            Method: ANY
+    Metadata:
+      Dockerfile: Dockerfile.lambda
+      DockerContext: ./backend
+      DockerTag: latest
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway HTTP API Endpoint URL"
+    Value: !Sub "https://${HRConnectHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  DynamoDBTableName:
+    Description: "DynamoDB Table Name"
+    Value: !Ref HRConnectDynamoTable
+  StorageBucketName:
+    Description: "S3 Storage Bucket Name"
+    Value: !Ref HRConnectStorageBucket
+  CognitoUserPoolId:
+    Description: "Cognito User Pool ID"
+    Value: !Ref HRConnectUserPool
+  CognitoClientId:
+    Description: "Cognito User Pool Client ID"
+    Value: !Ref HRConnectUserPoolClient
+

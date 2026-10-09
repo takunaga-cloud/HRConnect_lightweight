@@ -1,16 +1,23 @@
+# NOTE: 本番稼働は EC2/常時稼働コンテナではなく、AWS Lambda + DynamoDB + S3 + Cognito の
+# 完全サーバーレス構成（アイドル時固定費 $0）が推奨されます。
+# デプロイには `./deploy.sh` (AWS CDK) または AWS SAM / AWS Amplify を使用してください。
+# 本ファイルは、コンテナ環境でのステージング・動作確認用として保持しています。
+
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     restart: always
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
-      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
-      - COGNITO_REGION=${COGNITO_REGION}
+      - DYNAMODB_TABLE_NAME=${DYNAMODB_TABLE_NAME:-HRConnectTable-prod}
+      - AWS_REGION=${AWS_REGION:-ap-northeast-1}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
+      - COGNITO_REGION=${COGNITO_REGION:-ap-northeast-1}
       - AWS_S3_BUCKET=${AWS_S3_BUCKET}
-      - AWS_REGION=${AWS_REGION}
       - SECRET_KEY=${SECRET_KEY}
     networks:
       - hr-network
@@ -22,6 +29,7 @@ services:
     restart: always
     environment:
       - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+      - BACKEND_URL=${BACKEND_URL:-http://backend:8000}
     networks:
       - hr-network
     ports:
@@ -31,5 +39,3 @@ networks:
   hr-network:
     driver: bridge
 
-# Note: In production, we assume Aurora PostgreSQL is managed externally by AWS, 
-# so we don't include a 'db' service here.

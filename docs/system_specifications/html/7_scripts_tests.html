@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スクリプト & テスト - HRConnect 仕様書</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.75;
+      color: var(--text);
+      background-color: var(--bg-main);
+    }
+    /* Top Navigation Tab Bar */
+    .header-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      padding: 0 1rem;
+      gap: 0.25rem;
+    }
+    .tab {
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--primary); }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #eff6ff;
+    }
+    .portal-link {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #0369a1;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0 0.5rem;
+    }
+    .portal-link:hover { text-decoration: underline; }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    h2 {
+      font-size: 1.4rem;
+      color: #1e293b;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    h3 {
+      font-size: 1.15rem;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #334155;
+    }
+    li { margin-bottom: 0.35rem; }
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    tr:nth-child(even) { background: #fbfcfe; }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    footer {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <div class="nav-container">
+      <a href="00_full_file_index.html" class="tab ">全ファイル総索引</a>
+<a href="1_infra_aws.html" class="tab ">インフラ & AWS</a>
+<a href="2_backend_core_db.html" class="tab ">基盤 & DB</a>
+<a href="3_backend_api.html" class="tab ">APIエンドポイント</a>
+<a href="4_backend_models_services.html" class="tab ">モデル・スキーマ・サービス</a>
+<a href="5_frontend_pages.html" class="tab ">フロントエンド画面</a>
+<a href="6_frontend_components.html" class="tab ">フロントエンド部品</a>
+<a href="7_scripts_tests.html" class="tab active">スクリプト & テスト</a>
+<a href="8_docs_and_others.html" class="tab ">ドキュメント & 設定</a>
+      <a href="../index.html" class="portal-link">🔍 インタラクティブポータルへ</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>運用スクリプト & 結合・単体テスト 仕様詳細書</h1>
+<p>本ドキュメントは、HRConnectにおける「運用スクリプト & 結合・単体テスト」カテゴリに属する全ファイルの仕様・構成・詳細を網羅した資料です。</p>
+<p><strong>対象ファイル数:</strong> 33 ファイル</p>
+<hr />
+<h2>掲載ファイル一覧</h2>
+<ul><li><a href="#backend-scripts-README-md"><code>backend/scripts/README.md</code></a> : Backend Scripts</li></ul>
+<ul><li><a href="#backend-scripts-add_stamp_correction_template-py"><code>backend/scripts/add_stamp_correction_template.py</code></a> : add_stamp_correction_template.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-create_tables-py"><code>backend/scripts/create_tables.py</code></a> : create_tables.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-init_db-py"><code>backend/scripts/init_db.py</code></a> : init_db.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-init_dynamodb-py"><code>backend/scripts/init_dynamodb.py</code></a> : DynamoDB非同期セッション・リソース管理 & テーブル初期化</li></ul>
+<ul><li><a href="#backend-scripts-inspect_db-py"><code>backend/scripts/inspect_db.py</code></a> : inspect_db.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-seed_data-py"><code>backend/scripts/seed_data.py</code></a> : seed_data.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-seed_paid_leaves_2025-py"><code>backend/scripts/seed_paid_leaves_2025.py</code></a> : seed_paid_leaves_2025.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-seed_project_skills-py"><code>backend/scripts/seed_project_skills.py</code></a> : seed_project_skills.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-seed_shift_templates-py"><code>backend/scripts/seed_shift_templates.py</code></a> : seed_shift_templates.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-seed_shift_templates_sync-py"><code>backend/scripts/seed_shift_templates_sync.py</code></a> : seed_shift_templates_sync.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-seed_system_definitions-py"><code>backend/scripts/seed_system_definitions.py</code></a> : seed_system_definitions.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-verify_database_match-py"><code>backend/scripts/verify_database_match.py</code></a> : verify_database_match.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-scripts-verify_master_ref-py"><code>backend/scripts/verify_master_ref.py</code></a> : verify_master_ref.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-conftest-py"><code>backend/tests/conftest.py</code></a> : conftest.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_api_integration-py"><code>backend/tests/test_api_integration.py</code></a> : test_api_integration.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_api_smoke-py"><code>backend/tests/test_api_smoke.py</code></a> : test_api_smoke.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_attendance_service-py"><code>backend/tests/test_attendance_service.py</code></a> : test_attendance_service.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_calculator-py"><code>backend/tests/test_calculator.py</code></a> : test_calculator.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_integration_shifts-py"><code>backend/tests/test_integration_shifts.py</code></a> : test_integration_shifts.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_parser_refactored-py"><code>backend/tests/test_parser_refactored.py</code></a> : test_parser_refactored.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_project_service-py"><code>backend/tests/test_project_service.py</code></a> : test_project_service.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-tests-test_workflow_side_effects-py"><code>backend/tests/test_workflow_side_effects.py</code></a> : test_workflow_side_effects.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-e2e-applications-spec-ts"><code>frontend/e2e/applications.spec.ts</code></a> : applications.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-e2e-attendance-spec-ts"><code>frontend/e2e/attendance.spec.ts</code></a> : attendance.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-e2e-auth-spec-ts"><code>frontend/e2e/auth.spec.ts</code></a> : auth.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-e2e-db_connection-spec-ts"><code>frontend/e2e/db_connection.spec.ts</code></a> : db_connection.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-e2e-shifts-spec-ts"><code>frontend/e2e/shifts.spec.ts</code></a> : shifts.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#scripts-create_lightweight_zip-sh"><code>scripts/create_lightweight_zip.sh</code></a> : !/bin/bash</li></ul>
+<ul><li><a href="#scripts-find_unused_files-py"><code>scripts/find_unused_files.py</code></a> : find_unused_files.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#scripts-generate_complete_system_specs-py"><code>scripts/generate_complete_system_specs.py</code></a> : generate_complete_system_specs.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#scripts-generate_docs-py"><code>scripts/generate_docs.py</code></a> : generate_docs.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#scripts-restart_backend-sh"><code>scripts/restart_backend.sh</code></a> : !/bin/bash</li></ul>
+<hr />
+<h2><span id="backend-scripts-README-md"></span> backend/scripts/README.md</h2>
+<ul><li><strong>ファイル概要:</strong> Backend Scripts</li></ul>
+<ul><li><strong>行数:</strong> 29 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# Backend Scripts
+
+このディレクトリには、開発・運用・デバッグ用のスクリプトが含まれています。
+
+## 実行方法
+
+これらのスクリプトは `app` モジュール（バックエンドアプリケーション）に依存しているため、実行時には `backend` ディレクトリを `PYTHONPATH` に含める必要があります。
+
+### プロジェクトルート (`HRConnect/`) から実行する場合
+
+</code></pre>
+<h1>例: seed_data.py を実行</h1>
+<p>export PYTHONPATH=$PYTHONPATH:$(pwd)/backend</p>
+<p>python backend/scripts/seed_data.py</p>
+<pre><code class="language-">
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-add_stamp_correction_template-py"></span> backend/scripts/add_stamp_correction_template.py</h2>
+<ul><li><strong>ファイル概要:</strong> add_stamp_correction_template.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 45 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def add_template()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.db.session</code>, <code>app.models</code>, <code>asyncio</code>, <code>os</code>, <code>sqlalchemy</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+import sys
+import os
+
+# PYTHONPATHの調整
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from sqlalchemy import select
+from app.db.session import AsyncSessionLocal
+from app.models import ApplicationTemplate
+
+async def add_template():
+    async with AsyncSessionLocal() as db:
+        print(&quot;Checking for StampCorrection template...&quot;)
+        # Check both name variations
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-create_tables-py"></span> backend/scripts/create_tables.py</h2>
+<ul><li><strong>ファイル概要:</strong> create_tables.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 6 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.db.session</code>, <code>asyncio</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+from app.db.session import init_db
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(init_db())
+    print(&quot;Tables created successfully.&quot;)
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-init_db-py"></span> backend/scripts/init_db.py</h2>
+<ul><li><strong>ファイル概要:</strong> init_db.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 19 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def init_values()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.db.session</code>, <code>app.models</code>, <code>asyncio</code>, <code>os</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+import sys
+import os
+
+# パスを追加してappモジュールをインポートできるようにする
+sys.path.append(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;))
+
+from app.db.session import engine, Base
+from app.models import * # 全てのモデルをインポートしてmetadataに登録させる
+
+async def init_values():
+    print(&quot;Creating tables...&quot;)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-init_dynamodb-py"></span> backend/scripts/init_dynamodb.py</h2>
+<ul><li><strong>ファイル概要:</strong> DynamoDB非同期セッション・リソース管理 & テーブル初期化</li></ul>
+<ul><li><strong>行数:</strong> 31 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def main()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.core.config</code>, <code>app.db.dynamodb</code>, <code>asyncio</code>, <code>os</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+import os
+import sys
+
+# 親ディレクトリを sys.path に追加して app をインポート可能にする
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), &quot;..&quot;)))
+
+from app.db.dynamodb import create_dynamodb_table_if_not_exists
+from app.core.config import settings
+
+async def main():
+    print(&quot;=========================================&quot;)
+    print(&quot;HRConnect DynamoDB Initialization Script&quot;)
+    print(f&quot;Target Table: {settings.DYNAMODB_TABLE_NAME}&quot;)
+    print(f&quot;AWS Region:   {settings.AWS_REGION}&quot;)
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-inspect_db-py"></span> backend/scripts/inspect_db.py</h2>
+<ul><li><strong>ファイル概要:</strong> inspect_db.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 35 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def inspect()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.core.config</code>, <code>app.db.dynamodb</code>, <code>app.db.session</code>, <code>app.models</code>, <code>asyncio</code>, <code>os</code>, <code>sqlalchemy</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from sqlalchemy import select
+from app.db.session import AsyncSessionLocal
+from app.models import LeaveType
+from app.core.config import settings
+from app.db.dynamodb import session as ddb_session
+
+async def inspect():
+    print(&quot;--- SQLite LeaveTypes ---&quot;)
+    async with AsyncSessionLocal() as db:
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-seed_data-py"></span> backend/scripts/seed_data.py</h2>
+<ul><li><strong>ファイル概要:</strong> seed_data.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 275 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def seed_data()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.core.security</code>, <code>app.db.session</code>, <code>app.models</code>, <code>asyncio</code>, <code>datetime</code>, <code>random</code>, <code>sqlalchemy</code>, <code>sqlalchemy.ext.asyncio</code>, <code>sqlalchemy.orm</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+
+import asyncio
+import random
+from uuid import uuid4
+from datetime import datetime
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+
+from app.db.session import AsyncSessionLocal
+from app.models import User, Department, WorkRule, TaskCategory, Project, Attendance, WorkLog, Application, ApplicationTemplate
+from app.core.security import get_password_hash
+
+async def seed_data():
+    async with AsyncSessionLocal() as db:
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-seed_paid_leaves_2025-py"></span> backend/scripts/seed_paid_leaves_2025.py</h2>
+<ul><li><strong>ファイル概要:</strong> seed_paid_leaves_2025.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 69 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def seed_paid_leaves()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.core.config</code>, <code>app.models</code>, <code>asyncio</code>, <code>datetime</code>, <code>os</code>, <code>sqlalchemy</code>, <code>sqlalchemy.ext.asyncio</code>, <code>sqlalchemy.orm</code>, <code>sys</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+import sys
+import os
+from datetime import date
+from uuid import uuid4
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+
+# PYTHONPATHの調整
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from app.core.config import settings
+from app.models import User, LeaveType, PaidLeaveLedger
+
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-seed_project_skills-py"></span> backend/scripts/seed_project_skills.py</h2>
+<ul><li><strong>ファイル概要:</strong> seed_project_skills.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 63 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def seed_skills()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.core.config</code>, <code>app.models</code>, <code>asyncio</code>, <code>os</code>, <code>sqlalchemy</code>, <code>sqlalchemy.ext.asyncio</code>, <code>sqlalchemy.orm</code>, <code>sync_sqlite_to_dynamodb</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import sys
+import os
+import asyncio
+
+# アプリケーションのパスを通す
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+from app.core.config import settings
+from app.models import Project
+
+engine = create_async_engine(settings.DATABASE_URL)
+AsyncSessionLocal = sessionmaker(
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-seed_shift_templates-py"></span> backend/scripts/seed_shift_templates.py</h2>
+<ul><li><strong>ファイル概要:</strong> seed_shift_templates.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 44 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def seed_shift_templates()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.db.session</code>, <code>app.models</code>, <code>asyncio</code>, <code>datetime</code>, <code>os</code>, <code>sqlalchemy.future</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+import sys
+import os
+from datetime import time
+
+# Add backend directory to path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from sqlalchemy.future import select
+
+from app.db.session import AsyncSessionLocal
+from app.models import ShiftTemplate
+
+async def seed_shift_templates():
+    async with AsyncSessionLocal() as session:
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-seed_shift_templates_sync-py"></span> backend/scripts/seed_shift_templates_sync.py</h2>
+<ul><li><strong>ファイル概要:</strong> seed_shift_templates_sync.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 41 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def seed()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>psycopg2</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import psycopg2
+import uuid
+
+def seed():
+    conn_str = &quot;postgresql://postgres.shonqzbsrzoivbscaghl:koorinosyo19910328Nt-@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres&quot;
+    print(&quot;Connecting to Supabase using sync psycopg2...&quot;)
+    conn = psycopg2.connect(conn_str)
+    cur = conn.cursor()
+    
+    # テンプレートデータ
+    templates_to_create = [
+        {&quot;name&quot;: &quot;A直&quot;, &quot;start_time&quot;: &quot;09:00:00&quot;, &quot;end_time&quot;: &quot;18:00:00&quot;, &quot;break_minutes&quot;: 60},
+        {&quot;name&quot;: &quot;2直&quot;, &quot;start_time&quot;: &quot;13:00:00&quot;, &quot;end_time&quot;: &quot;22:00:00&quot;, &quot;break_minutes&quot;: 60},
+        {&quot;name&quot;: &quot;時差&quot;, &quot;start_time&quot;: &quot;10:00:00&quot;, &quot;end_time&quot;: &quot;19:00:00&quot;, &quot;break_minutes&quot;: 60},
+        {&quot;name&quot;: &quot;午前出張&quot;, &quot;start_time&quot;: &quot;09:00:00&quot;, &quot;end_time&quot;: &quot;18:00:00&quot;, &quot;break_minutes&quot;: 60},
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-seed_system_definitions-py"></span> backend/scripts/seed_system_definitions.py</h2>
+<ul><li><strong>ファイル概要:</strong> seed_system_definitions.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 28 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def seed_data()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.db.session</code>, <code>app.models.system_definition</code>, <code>asyncio</code>, <code>sqlalchemy</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import asyncio
+from sqlalchemy import select
+from app.db.session import AsyncSessionLocal
+from app.models.system_definition import SystemDefinition
+
+async def seed_data():
+    async with AsyncSessionLocal() as db:
+        # Check if already seeded
+        result = await db.execute(select(SystemDefinition).limit(1))
+        if result.scalars().first():
+            print(&quot;Already seeded.&quot;)
+            return
+
+        definitions = [
+            {&quot;category_code&quot;: &quot;PAID_LEAVE_TYPE&quot;, &quot;code&quot;: &quot;FullDay&quot;, &quot;name&quot;: &quot;全日&quot;, &quot;order&quot;: 1},
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-verify_database_match-py"></span> backend/scripts/verify_database_match.py</h2>
+<ul><li><strong>ファイル概要:</strong> verify_database_match.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 218 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def normalize_value(val)</code></strong>: 比較のために値を文字列などの共通の比較可能フォーマットに正規化します。</li></ul>
+<ul><li><strong><code>def verify_databases()</code></strong>: ローカルと本番のデータベースの全レコードを完全に突き合わせ検証します。</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.models</code>, <code>datetime</code>, <code>os</code>, <code>sqlalchemy</code>, <code>sqlalchemy.orm</code>, <code>sys</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import sys
+from datetime import date, datetime
+from uuid import UUID
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import sessionmaker
+
+# アプリケーションのパスを通す
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from app.models import (
+    Base,
+    User,
+    Department,
+    AffiliationGroup,
+</code></pre>
+<hr />
+<h2><span id="backend-scripts-verify_master_ref-py"></span> backend/scripts/verify_master_ref.py</h2>
+<ul><li><strong>ファイル概要:</strong> verify_master_ref.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 16 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def test_system_definitions_access()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>requests</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+
+import requests
+
+def test_system_definitions_access():
+    # Use the admin email we know exists
+    login_url = &quot;http://localhost:3000/api/auth/login&quot; # This goes through our route handler
+    # Since we can&#x27;t easily handle cookies and redirect in a simple script for Next.js route handlers,
+    # let&#x27;s try to hit the backend directly if we had a token, 
+    # but the backend requires a token from Cognito or our mock.
+    
+    # Actually, a better way is to check the backend code logic which I already did.
+    # To be really sure, I&#x27;ll just check if the backend starts without errors.
+    pass
+
+if __name__ == &quot;__main__&quot;:
+</code></pre>
+<hr />
+<h2><span id="backend-tests-conftest-py"></span> backend/tests/conftest.py</h2>
+<ul><li><strong>ファイル概要:</strong> conftest.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 74 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def event_loop()</code></strong>: Create an instance of the default event loop for each test case.</li></ul>
+<ul><li><strong><code>def test_engine()</code></strong>: </li></ul>
+<ul><li><strong><code>def db_session(test_engine)</code></strong>: テスト関数ごとに新しいセッションを作成し、終了後にロールバックするフィクスチャ。</li></ul>
+<ul><li><strong><code>def client(db_session)</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.main</code>, <code>app.models.base</code>, <code>asyncio</code>, <code>httpx</code>, <code>os</code>, <code>pytest</code>, <code>sqlalchemy.ext.asyncio</code>, <code>sqlalchemy.orm</code>, <code>sqlalchemy.pool</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import os
+import pytest
+import asyncio
+
+# Pydantic設定エラー回避のためのダミー環境変数
+os.environ[&quot;COGNITO_USER_POOL_ID&quot;] = &quot;mock_pool_id&quot;
+os.environ[&quot;COGNITO_CLIENT_ID&quot;] = &quot;mock_client_id&quot;
+# テスト用DB URL (Configのデフォルトを上書き)
+os.environ[&quot;DATABASE_URL&quot;] = &quot;sqlite+aiosqlite:///:memory:&quot;
+
+from typing import AsyncGenerator
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_api_integration-py"></span> backend/tests/test_api_integration.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_api_integration.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 156 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def setup_users(db_session)</code></strong>: </li></ul>
+<ul><li><strong><code>def test_admin_only_endpoint(client, db_session, setup_users)</code></strong>: </li></ul>
+<ul><li><strong><code>def test_invalid_token(client)</code></strong>: </li></ul>
+<ul><li><strong><code>def test_paid_leave_balance_validation(client, db_session, setup_users)</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.models</code>, <code>datetime</code>, <code>os</code>, <code>pytest</code>, <code>sqlalchemy</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import pytest
+import os
+from app.models import User, WorkRule
+from sqlalchemy import select
+
+# Mock Auth enable
+os.environ[&quot;ALLOW_MOCK_AUTH&quot;] = &quot;true&quot;
+
+@pytest.fixture
+async def setup_users(db_session):
+    # Ensure WorkRule exists
+    result = await db_session.execute(select(WorkRule).limit(1))
+    work_rule = result.scalars().first()
+    if not work_rule:
+        work_rule = WorkRule(name=&quot;Default Rule&quot;, config={&quot;daily_hours&quot;: 8})
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_api_smoke-py"></span> backend/tests/test_api_smoke.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_api_smoke.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 16 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def test_openapi_endpoint()</code></strong>: アプリケーションが正常に起動し、OpenAPI定義を返却できるか確認するスモークテスト。</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.main</code>, <code>httpx</code>, <code>pytest</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import pytest
+from httpx import AsyncClient, ASGITransport
+from app.main import app
+
+@pytest.mark.asyncio
+async def test_openapi_endpoint():
+    &quot;&quot;&quot;
+    アプリケーションが正常に起動し、OpenAPI定義を返却できるか確認するスモークテスト。
+    &quot;&quot;&quot;
+    async with AsyncClient(transport=ASGITransport(app=app), base_url=&quot;http://test&quot;) as ac:
+        response = await ac.get(&quot;/api/v1/openapi.json&quot;)
+    
+    # DB接続エラーなどで起動しない場合はここで落ちるか500になる
+    assert response.status_code == 200
+    assert &quot;openapi&quot; in response.json()
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_attendance_service-py"></span> backend/tests/test_attendance_service.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_attendance_service.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 98 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義クラス</h3>
+<ul><li><strong><code>class MockTemplate</code></strong>: 詳細なし</li></ul>
+<ul style="margin-left:2rem;"><li>メソッド: <code>__init__()</code></li></ul>
+<ul><li><strong><code>class MockApplication</code></strong>: 詳細なし</li></ul>
+<ul style="margin-left:2rem;"><li>メソッド: <code>__init__()</code></li></ul>
+<ul><li><strong><code>class MockShift</code></strong>: 詳細なし</li></ul>
+<ul style="margin-left:2rem;"><li>メソッド: <code>__init__()</code></li></ul>
+<ul><li><strong><code>class TestAttendanceService</code></strong>: 詳細なし</li></ul>
+<ul style="margin-left:2rem;"><li>メソッド: <code>test_get_paid_leave_map_basic()</code>, <code>test_determine_shift_for_date_paid_leave()</code>, <code>test_determine_shift_half_day_morning()</code>, <code>test_determine_shift_normal()</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.schemas.application</code>, <code>app.services.attendance_service</code>, <code>datetime</code>, <code>pytest</code>, <code>unittest.mock</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+from datetime import date, time, datetime
+import pytest
+from app.services.attendance_service import AttendanceService
+# We use simple Mock objects to avoid DB dependency for logic tests
+from unittest.mock import MagicMock
+
+class MockTemplate:
+    def __init__(self, settings=None, schema_definition=None):
+        self.settings = settings or {}
+        self.schema_definition = schema_definition or []
+
+class MockApplication:
+    def __init__(self, type, input_data, template=None):
+        self.type = type
+        self.input_data = input_data
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_calculator-py"></span> backend/tests/test_calculator.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_calculator.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 81 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義クラス</h3>
+<ul><li><strong><code>class TestCalculator</code></strong>: 詳細なし</li></ul>
+<ul style="margin-left:2rem;"><li>メソッド: <code>test_round_time()</code>, <code>test_calculate_working_hours_basic()</code>, <code>test_calculate_working_hours_with_breaks()</code>, <code>test_calculate_overtime()</code>, <code>test_midnight_overtime()</code>, <code>test_calculate_holiday_work_days()</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.services.calculator</code>, <code>datetime</code>, <code>pytest</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+from datetime import datetime, time, date, timedelta
+import pytest
+from app.services.calculator import round_time, calculate_working_hours, calculate_overtime, calculate_holiday_work_days
+
+class TestCalculator:
+    def test_round_time(self):
+        # 09:01 -&gt; 09:00 (Floor, 15min unit)
+        dt = datetime(2024, 1, 1, 9, 1)
+        assert round_time(dt, 15, &quot;floor&quot;) == datetime(2024, 1, 1, 9, 0)
+        
+        # 09:01 -&gt; 09:15 (Ceil, 15min unit)
+        assert round_time(dt, 15, &quot;ceil&quot;) == datetime(2024, 1, 1, 9, 15)
+        
+        # 09:14 -&gt; 09:15 (Round, 15min unit)
+        dt2 = datetime(2024, 1, 1, 9, 14)
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_integration_shifts-py"></span> backend/tests/test_integration_shifts.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_integration_shifts.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 86 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def setup_users_shifts(db_session)</code></strong>: </li></ul>
+<ul><li><strong><code>def test_shift_lifecycle(client, setup_users_shifts)</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.models</code>, <code>datetime</code>, <code>os</code>, <code>pytest</code>, <code>sqlalchemy</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import pytest
+import os
+from datetime import date
+from sqlalchemy import select
+from app.models import WorkRule, User
+
+os.environ[&quot;ALLOW_MOCK_AUTH&quot;] = &quot;true&quot;
+
+@pytest.fixture
+async def setup_users_shifts(db_session):
+    # Ensure WorkRule
+    result = await db_session.execute(select(WorkRule).limit(1))
+    work_rule = result.scalars().first()
+    if not work_rule:
+        work_rule = WorkRule(name=&quot;Default Rule&quot;, config={&quot;daily_hours&quot;: 8})
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_parser_refactored-py"></span> backend/tests/test_parser_refactored.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_parser_refactored.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 51 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def test_parse_single_row_valid()</code></strong>: </li></ul>
+<ul><li><strong><code>def test_parse_single_row_user_not_found()</code></strong>: </li></ul>
+<ul><li><strong><code>def test_parse_shift_csv_valid()</code></strong>: </li></ul>
+<ul><li><strong><code>def test_parse_shift_csv_error()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.core.exceptions</code>, <code>app.core.messages</code>, <code>app.services.parser</code>, <code>datetime</code>, <code>fastapi</code>, <code>pytest</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import pytest
+from datetime import date, time
+from uuid import uuid4
+from fastapi import HTTPException
+from app.services.parser import parse_shift_csv, _parse_single_row
+from app.core.messages import ERROR_USER_ID_NOT_FOUND_IN_CSV, ERROR_CSV_PARSE_FAILED
+
+def test_parse_single_row_valid():
+    user_id = uuid4()
+    user_map = {&quot;EMP001&quot;: user_id}
+    row = [&quot;2024-01-01&quot;, &quot;EMP001&quot;, &quot;09:00&quot;, &quot;18:00&quot;, &quot;Day&quot;, &quot;False&quot;]
+    
+    shift = _parse_single_row(row, user_map)
+    
+    assert shift.target_date == date(2024, 1, 1)
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_project_service-py"></span> backend/tests/test_project_service.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_project_service.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 75 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def test_create_and_get_project(db_session)</code></strong>: </li></ul>
+<ul><li><strong><code>def test_update_project(db_session)</code></strong>: </li></ul>
+<ul><li><strong><code>def test_delete_project(db_session)</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.models</code>, <code>app.schemas.project</code>, <code>app.services.project_service</code>, <code>datetime</code>, <code>pytest</code>, <code>pytest_asyncio</code>, <code>sqlalchemy.ext.asyncio</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import pytest
+import pytest_asyncio
+from uuid import uuid4
+from datetime import date
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.services.project_service import ProjectService
+from app.schemas.project import ProjectCreate, ProjectUpdate
+from app.models import User, Department, WorkRule
+
+@pytest.mark.asyncio
+async def test_create_and_get_project(db_session: AsyncSession):
+    service = ProjectService(db_session)
+    
+    # Create
+</code></pre>
+<hr />
+<h2><span id="backend-tests-test_workflow_side_effects-py"></span> backend/tests/test_workflow_side_effects.py</h2>
+<ul><li><strong>ファイル概要:</strong> test_workflow_side_effects.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 85 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def test_apply_paid_leave_side_effects_creates_shift()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.models</code>, <code>app.schemas.application</code>, <code>app.services.side_effect</code>, <code>datetime</code>, <code>pytest</code>, <code>unittest.mock</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+
+import pytest
+from unittest.mock import AsyncMock, MagicMock
+from uuid import uuid4
+from datetime import date, timedelta
+
+from app.models import Application, PaidLeaveLedger, Shift
+from app.schemas.application import PaidLeaveInputData
+from app.services.side_effect import SideEffectService
+
+@pytest.mark.asyncio
+async def test_apply_paid_leave_side_effects_creates_shift():
+    # Arrange
+    db = AsyncMock()
+    user_id = uuid4()
+</code></pre>
+<hr />
+<h2><span id="frontend-e2e-applications-spec-ts"></span> frontend/e2e/applications.spec.ts</h2>
+<ul><li><strong>ファイル概要:</strong> applications.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 67 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@playwright/test</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { test, expect } from &#x27;@playwright/test&#x27;;
+
+test.describe(&#x27;Employee Leave Application Flow&#x27;, () =&gt; {
+    test.beforeEach(async ({ page }) =&gt; {
+        // ログイン処理
+        await page.goto(&#x27;/login&#x27;);
+        await page.fill(&#x27;input[id=&quot;email&quot;]&#x27;, &#x27;user1@hr-connect.com&#x27;);
+        await page.fill(&#x27;input[type=&quot;password&quot;]&#x27;, &#x27;User@7m*qR8#tN4&#x27;);
+        await page.click(&#x27;button[type=&quot;submit&quot;]&#x27;);
+        await expect(page).toHaveURL(&#x27;/dashboard&#x27;);
+    });
+
+    test(&#x27;Submit a paid leave application&#x27;, async ({ page }) =&gt; {
+        // 1. 申請ページに遷移
+        await page.goto(&#x27;/applications&#x27;);
+</code></pre>
+<hr />
+<h2><span id="frontend-e2e-attendance-spec-ts"></span> frontend/e2e/attendance.spec.ts</h2>
+<ul><li><strong>ファイル概要:</strong> attendance.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 51 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@playwright/test</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { test, expect } from &#x27;@playwright/test&#x27;;
+
+test.describe(&#x27;Employee Attendance Stamping&#x27;, () =&gt; {
+    test.beforeEach(async ({ page, context }) =&gt; {
+        // Nominatimの逆ジオコーディングAPIのモック
+        await page.route(&#x27;https://nominatim.openstreetmap.org/reverse*&#x27;, async route =&gt; {
+            await route.fulfill({
+                status: 200,
+                contentType: &#x27;application/json&#x27;,
+                body: JSON.stringify({ display_name: &#x27;東京都千代田区丸の内１丁目&#x27; })
+            });
+        });
+
+        // 位置情報権限のモック付与と位置設定 (東京駅付近)
+        await context.grantPermissions([&#x27;geolocation&#x27;]);
+</code></pre>
+<hr />
+<h2><span id="frontend-e2e-auth-spec-ts"></span> frontend/e2e/auth.spec.ts</h2>
+<ul><li><strong>ファイル概要:</strong> auth.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 21 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@playwright/test</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { test, expect } from &#x27;@playwright/test&#x27;;
+
+test(&#x27;Login flow and redirect to dashboard&#x27;, async ({ page }) =&gt; {
+    // 1. Go to login page
+    await page.goto(&#x27;/login&#x27;);
+
+    // 2. Fill login form
+    // Using Mock Auth triggers (admin@example.com)
+    await page.fill(&#x27;input[id=&quot;email&quot;]&#x27;, &#x27;admin@hr-connect.com&#x27;);
+    await page.fill(&#x27;input[type=&quot;password&quot;]&#x27;, &#x27;Admin#K9x$2P!w9a&#x27;);
+
+    // 3. Submit
+    await page.click(&#x27;button[type=&quot;submit&quot;]&#x27;);
+
+    // 4. Verify redirect to dashboard
+</code></pre>
+<hr />
+<h2><span id="frontend-e2e-db_connection-spec-ts"></span> frontend/e2e/db_connection.spec.ts</h2>
+<ul><li><strong>ファイル概要:</strong> db_connection.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 41 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@playwright/test</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { test, expect } from &#x27;@playwright/test&#x27;;
+
+test.describe(&#x27;Database Connection and Display Verification&#x27;, () =&gt; {
+    test.beforeEach(async ({ page }) =&gt; {
+        // 1. 管理者としてログイン
+        await page.goto(&#x27;/login&#x27;);
+        await page.fill(&#x27;input[id=&quot;email&quot;]&#x27;, &#x27;admin@hr-connect.com&#x27;);
+        await page.fill(&#x27;input[type=&quot;password&quot;]&#x27;, &#x27;Admin#K9x$2P!w9a&#x27;);
+        await page.click(&#x27;button[type=&quot;submit&quot;]&#x27;);
+        await expect(page).toHaveURL(&#x27;/dashboard&#x27;);
+    });
+
+    test(&#x27;Verify departments are correctly loaded from DB&#x27;, async ({ page }) =&gt; {
+        // 2. 部門（部署）管理画面へ遷移
+        await page.goto(&#x27;/departments&#x27;);
+</code></pre>
+<hr />
+<h2><span id="frontend-e2e-shifts-spec-ts"></span> frontend/e2e/shifts.spec.ts</h2>
+<ul><li><strong>ファイル概要:</strong> shifts.spec.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 25 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@playwright/test</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+
+import { test, expect } from &#x27;@playwright/test&#x27;;
+
+test.describe(&#x27;Admin Shift Management&#x27;, () =&gt; {
+    test.beforeEach(async ({ page }) =&gt; {
+        // Login before each test
+        await page.goto(&#x27;/login&#x27;);
+        await page.fill(&#x27;input[id=&quot;email&quot;]&#x27;, &#x27;admin@hr-connect.com&#x27;);
+        await page.fill(&#x27;input[type=&quot;password&quot;]&#x27;, &#x27;Admin#K9x$2P!w9a&#x27;);
+        await page.click(&#x27;button[type=&quot;submit&quot;]&#x27;);
+        await expect(page).toHaveURL(&#x27;/dashboard&#x27;);
+    });
+
+    test(&#x27;Navigate to Shift Management and verify elements&#x27;, async ({ page }) =&gt; {
+        // 1. Navigate to Shifts page
+</code></pre>
+<hr />
+<h2><span id="scripts-create_lightweight_zip-sh"></span> scripts/create_lightweight_zip.sh</h2>
+<ul><li><strong>ファイル概要:</strong> !/bin/bash</li></ul>
+<ul><li><strong>行数:</strong> 50 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+#!/bin/bash
+# HRConnect 純粋ローカル(SQLite)構成用 ZIP作成スクリプト
+
+SCRIPT_DIR=&quot;$(cd &quot;$(dirname &quot;${BASH_SOURCE[0]}&quot;)&quot; &amp;&amp; pwd)&quot;
+PROJECT_ROOT=&quot;$(cd &quot;$SCRIPT_DIR/..&quot; &amp;&amp; pwd)&quot;
+OUTPUT_ZIP=&quot;$PROJECT_ROOT/HRConnect_lightweight.zip&quot;
+
+echo &quot;=== 純粋ローカル構成（AWS非依存）軽量ZIPの作成を開始します ===&quot;
+
+# 不要な生成テキスト・不要ZIPファイルを事前に削除
+rm -f &quot;$PROJECT_ROOT&quot;/HRConnect_*.txt &quot;$PROJECT_ROOT&quot;/HRConnect_*.zip
+
+cd &quot;$PROJECT_ROOT&quot; || exit 1
+
+# Python zipfile で不要パッケージ・キャッシュ・生成物を確実除外
+</code></pre>
+<hr />
+<h2><span id="scripts-find_unused_files-py"></span> scripts/find_unused_files.py</h2>
+<ul><li><strong>ファイル概要:</strong> find_unused_files.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 214 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def find_ts_unused_files()</code></strong>: </li></ul>
+<ul><li><strong><code>def find_py_unused_files()</code></strong>: </li></ul>
+<ul><li><strong><code>def resolve_py_mod(current_file, mod_path, all_files)</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>os</code>, <code>re</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# -*- coding: utf-8 -*-
+import os
+import re
+import sys
+
+def find_ts_unused_files():
+    frontend_dir = &quot;/home/takunaga/HRConnect_Next/HRConnect/frontend&quot;
+    src_dir = os.path.join(frontend_dir, &quot;src&quot;)
+    
+    # 1. すべてのTS/TSXファイルを取得
+    all_files = []
+    for root, dirs, files in os.walk(src_dir):
+        # node_modules や .next などの除外は os.walk の時点で src に絞っているので不要
+        for file in files:
+            if file.endswith((&#x27;.ts&#x27;, &#x27;.tsx&#x27;)):
+</code></pre>
+<hr />
+<h2><span id="scripts-generate_complete_system_specs-py"></span> scripts/generate_complete_system_specs.py</h2>
+<ul><li><strong>ファイル概要:</strong> generate_complete_system_specs.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 655 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def scan_files()</code></strong>: </li></ul>
+<ul><li><strong><code>def categorize_file(rel_path)</code></strong>: </li></ul>
+<ul><li><strong><code>def analyze_file_content(path)</code></strong>: </li></ul>
+<ul><li><strong><code>def generate_docs()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>ast</code>, <code>html</code>, <code>json</code>, <code>os</code>, <code>pathlib</code>, <code>re</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import os
+import re
+import ast
+import json
+import html
+from pathlib import Path
+
+BASE_DIR = Path(&quot;/home/takunaga/HRConnect_lightweight&quot;)
+DOCS_DIR = BASE_DIR / &quot;docs&quot; / &quot;system_specifications&quot;
+MD_DIR = DOCS_DIR / &quot;markdown&quot;
+DOCS_DIR.mkdir(parents=True, exist_ok=True)
+MD_DIR.mkdir(parents=True, exist_ok=True)
+
+EXCLUDE_DIRS = {
+    &#x27;node_modules&#x27;, &#x27;.next&#x27;, &#x27;.venv&#x27;, &#x27;venv&#x27;, &#x27;__pycache__&#x27;,
+</code></pre>
+<hr />
+<h2><span id="scripts-generate_docs-py"></span> scripts/generate_docs.py</h2>
+<ul><li><strong>ファイル概要:</strong> generate_docs.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 376 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def extract_python_metadata(code)</code></strong>: </li></ul>
+<ul><li><strong><code>def extract_ts_js_metadata(code)</code></strong>: </li></ul>
+<ul><li><strong><code>def get_python_explanation(line, line_num, ast_map)</code></strong>: </li></ul>
+<ul><li><strong><code>def analyze_python_ast(code)</code></strong>: </li></ul>
+<ul><li><strong><code>def get_ts_js_explanation(line)</code></strong>: </li></ul>
+<ul><li><strong><code>def infer_file_purpose(file_path)</code></strong>: </li></ul>
+<ul><li><strong><code>def generate_markdown_content(file_path)</code></strong>: </li></ul>
+<ul><li><strong><code>def main()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>ast</code>, <code>os</code>, <code>pathlib</code>, <code>re</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+
+import os
+import ast
+import re
+from pathlib import Path
+
+# Config
+BASE_DIR = Path(&quot;/home/takunaga/HRConnect&quot;)
+OUTPUT_DIR = BASE_DIR / &quot;md_file&quot;
+EXCLUDE_DIRS = {
+    &quot;node_modules&quot;, &quot;venv&quot;, &quot;.venv&quot;, &quot;__pycache__&quot;, &quot;.git&quot;, &quot;.next&quot;, 
+    &quot;dist&quot;, &quot;build&quot;, &quot;md_file&quot;, &quot;.idea&quot;, &quot;.vscode&quot;, &quot;coverage&quot;, &quot;.pytest_cache&quot;
+}
+EXCLUDE_EXTENSIONS = {
+    &quot;.pyc&quot;, &quot;.pyo&quot;, &quot;.pyd&quot;, &quot;.db&quot;, &quot;.sq3&quot;, &quot;.sqlite&quot;, &quot;.png&quot;, &quot;.jpg&quot;, &quot;.jpeg&quot;, &quot;.gif&quot;, &quot;.svg&quot;, &quot;.ico&quot;, 
+</code></pre>
+<hr />
+<h2><span id="scripts-restart_backend-sh"></span> scripts/restart_backend.sh</h2>
+<ul><li><strong>ファイル概要:</strong> !/bin/bash</li></ul>
+<ul><li><strong>行数:</strong> 9 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> 運用スクリプト & 結合・単体テスト</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+#!/bin/bash
+# バックエンドを全インターフェース(0.0.0.0)で待機するように再起動します。
+# これにより、localhost (IPv6/IPv4 の両方) からのアクセスを確実に受け取れるようになります。
+
+echo &quot;Restarting backend with host 0.0.0.0...&quot;
+pkill -f &quot;uvicorn app.main:app&quot;
+cd /home/takunaga/HRConnect/backend
+nohup ./venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload &gt; uvicorn.log 2&gt;&amp;1 &amp;
+echo &quot;Backend restarted in background. Logging to backend/uvicorn.log&quot;
+</code></pre>
+<hr />
+  </div>
+
+  <footer>
+    <p>HRConnect Lightweight - Full System Specification Documentation</p>
+    <p>© 2026 HRConnect. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ドキュメント & 設定 - HRConnect 仕様書</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.75;
+      color: var(--text);
+      background-color: var(--bg-main);
+    }
+    /* Top Navigation Tab Bar */
+    .header-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      padding: 0 1rem;
+      gap: 0.25rem;
+    }
+    .tab {
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--primary); }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #eff6ff;
+    }
+    .portal-link {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #0369a1;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0 0.5rem;
+    }
+    .portal-link:hover { text-decoration: underline; }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    h2 {
+      font-size: 1.4rem;
+      color: #1e293b;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    h3 {
+      font-size: 1.15rem;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #334155;
+    }
+    li { margin-bottom: 0.35rem; }
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    tr:nth-child(even) { background: #fbfcfe; }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    footer {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <div class="nav-container">
+      <a href="00_full_file_index.html" class="tab ">全ファイル総索引</a>
+<a href="1_infra_aws.html" class="tab ">インフラ & AWS</a>
+<a href="2_backend_core_db.html" class="tab ">基盤 & DB</a>
+<a href="3_backend_api.html" class="tab ">APIエンドポイント</a>
+<a href="4_backend_models_services.html" class="tab ">モデル・スキーマ・サービス</a>
+<a href="5_frontend_pages.html" class="tab ">フロントエンド画面</a>
+<a href="6_frontend_components.html" class="tab ">フロントエンド部品</a>
+<a href="7_scripts_tests.html" class="tab ">スクリプト & テスト</a>
+<a href="8_docs_and_others.html" class="tab active">ドキュメント & 設定</a>
+      <a href="../index.html" class="portal-link">🔍 インタラクティブポータルへ</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>ドキュメント & プロジェクト共通設定 仕様詳細書</h1>
+<p>本ドキュメントは、HRConnectにおける「ドキュメント & プロジェクト共通設定」カテゴリに属する全ファイルの仕様・構成・詳細を網羅した資料です。</p>
+<p><strong>対象ファイル数:</strong> 53 ファイル</p>
+<hr />
+<h2>掲載ファイル一覧</h2>
+<ul><li><a href="#-antigravityrules"><code>.antigravityrules</code></a> : .antigravityrules モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#-cursorrules"><code>.cursorrules</code></a> : .cursorrules モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#-env"><code>.env</code></a> : .env モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#-gitignore"><code>.gitignore</code></a> : .gitignore モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#architecture_diagram-md"><code>architecture_diagram.md</code></a> : design.md</li></ul>
+<ul><li><a href="#aws_deployment_step_by_step_guide-html"><code>aws_deployment_step_by_step_guide.html</code></a> : aws_deployment_step_by_step_guide.html モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#aws_serverless_architecture-html"><code>aws_serverless_architecture.html</code></a> : aws_serverless_architecture.html モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend--dockerignore"><code>backend/.dockerignore</code></a> : .dockerignore モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-Dockerfile"><code>backend/Dockerfile</code></a> : Dockerfile モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-alembic-README"><code>backend/alembic/README</code></a> : README モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-alembic-env-py"><code>backend/alembic/env.py</code></a> : env.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-alembic-script-py-mako"><code>backend/alembic/script.py.mako</code></a> : script.py.mako モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-alembic-versions-0d3446f2df76_add_skill_columns_to_project-py"><code>backend/alembic/versions/0d3446f2df76_add_skill_columns_to_project.py</code></a> : Add skill columns to Project</li></ul>
+<ul><li><a href="#backend-alembic-versions-25eaaa692760_fix_schema-py"><code>backend/alembic/versions/25eaaa692760_fix_schema.py</code></a> : fix schema</li></ul>
+<ul><li><a href="#backend-alembic-versions-294a7a977840_add_hashed_password_to_user-py"><code>backend/alembic/versions/294a7a977840_add_hashed_password_to_user.py</code></a> : Add hashed_password to User</li></ul>
+<ul><li><a href="#backend-alembic-versions-2a1d7c636fef_add_hourly_rate_to_user-py"><code>backend/alembic/versions/2a1d7c636fef_add_hourly_rate_to_user.py</code></a> : Add hourly_rate to user</li></ul>
+<ul><li><a href="#backend-alembic-versions-33b1f50c310c_add_project_role-py"><code>backend/alembic/versions/33b1f50c310c_add_project_role.py</code></a> : Add project role</li></ul>
+<ul><li><a href="#backend-alembic-versions-40c2ff2543e3_add_user_id_to_user-py"><code>backend/alembic/versions/40c2ff2543e3_add_user_id_to_user.py</code></a> : Add user_id to User</li></ul>
+<ul><li><a href="#backend-alembic-versions-52f523s89h2_add_settings-py"><code>backend/alembic/versions/52f523s89h2_add_settings.py</code></a> : add settings to application template</li></ul>
+<ul><li><a href="#backend-alembic-versions-74e490ef0b95_add_difficulty_and_category_to_projects-py"><code>backend/alembic/versions/74e490ef0b95_add_difficulty_and_category_to_projects.py</code></a> : add_difficulty_and_category_to_projects</li></ul>
+<ul><li><a href="#backend-alembic-versions-8ddd255f0cd9_add_leave_types_and_ledgers-py"><code>backend/alembic/versions/8ddd255f0cd9_add_leave_types_and_ledgers.py</code></a> : Add leave types and ledgers</li></ul>
+<ul><li><a href="#backend-alembic-versions-aac66402b735_add_status_to_shift-py"><code>backend/alembic/versions/aac66402b735_add_status_to_shift.py</code></a> : Add status to shift</li></ul>
+<ul><li><a href="#backend-alembic-ini"><code>backend/alembic.ini</code></a> : A generic, single database configuration.</li></ul>
+<ul><li><a href="#backend-app-__init__-py"><code>backend/app/__init__.py</code></a> : __init__.py モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-app-tests-test_dynamodb-py"><code>backend/app/tests/test_dynamodb.py</code></a> : DynamoDB非同期セッション・リソース管理 & テーブル初期化</li></ul>
+<ul><li><a href="#backend-mypy-ini"><code>backend/mypy.ini</code></a> : mypy.ini モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-pytest-ini"><code>backend/pytest.ini</code></a> : pytest.ini モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#backend-requirements-txt"><code>backend/requirements.txt</code></a> : requirements.txt モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#design-md"><code>design.md</code></a> : design.md</li></ul>
+<ul><li><a href="#distribution_guide-md"><code>distribution_guide.md</code></a> : Windows向けアプリケーション配布・起動手順書</li></ul>
+<ul><li><a href="#docker-compose-yml"><code>docker-compose.yml</code></a> : docker-compose.yml モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#docs-basic_design-md"><code>docs/basic_design.md</code></a> : HRConnect 基本設計書</li></ul>
+<ul><li><a href="#docs-database_design-md"><code>docs/database_design.md</code></a> : HRConnect DB設計書</li></ul>
+<ul><li><a href="#docs-development_guide-md"><code>docs/development_guide.md</code></a> : HRConnect 改修指南書 (開発者向けガイド)</li></ul>
+<ul><li><a href="#docs-functional_design-md"><code>docs/functional_design.md</code></a> : HRConnect 機能設計書</li></ul>
+<ul><li><a href="#docs-maintenance_manual-md"><code>docs/maintenance_manual.md</code></a> : HRConnect メンテナンス手順書</li></ul>
+<ul><li><a href="#docs-operation_specs-md"><code>docs/operation_specs.md</code></a> : HRConnect 運用仕様書</li></ul>
+<ul><li><a href="#docs-requirements_definition-md"><code>docs/requirements_definition.md</code></a> : HRConnect 要件定義書</li></ul>
+<ul><li><a href="#frontend--dockerignore"><code>frontend/.dockerignore</code></a> : .dockerignore モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend--gitignore"><code>frontend/.gitignore</code></a> : .gitignore モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-Dockerfile"><code>frontend/Dockerfile</code></a> : Dockerfile モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-components-json"><code>frontend/components.json</code></a> : components.json モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-eslint-config-mjs"><code>frontend/eslint.config.mjs</code></a> : eslint.config.mjs モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-next-config-ts"><code>frontend/next.config.ts</code></a> : next.config.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-package-json"><code>frontend/package.json</code></a> : package.json モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-playwright-config-ts"><code>frontend/playwright.config.ts</code></a> : playwright.config.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-postcss-config-mjs"><code>frontend/postcss.config.mjs</code></a> : postcss.config.mjs モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-src-middleware-ts"><code>frontend/src/middleware.ts</code></a> : middleware.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-tsconfig-json"><code>frontend/tsconfig.json</code></a> : tsconfig.json モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-vitest-config-ts"><code>frontend/vitest.config.ts</code></a> : vitest.config.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#frontend-vitest-setup-ts"><code>frontend/vitest.setup.ts</code></a> : vitest.setup.ts モジュール / 設定ファイル</li></ul>
+<ul><li><a href="#system_specification_and_improvements-md"><code>system_specification_and_improvements.md</code></a> : HRConnect 実装改善ポイント（AIエージェント向け）</li></ul>
+<ul><li><a href="#system_structure_and_specs-md"><code>system_structure_and_specs.md</code></a> : design.md</li></ul>
+<hr />
+<h2><span id="-antigravityrules"></span> .antigravityrules</h2>
+<ul><li><strong>ファイル概要:</strong> .antigravityrules モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 29 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# General Behavior
+- You are an expert AI software engineer.
+- **ALWAYS communicate in Japanese.**
+- Explain your thought process and plans in Japanese.
+
+# Language Rules for Code &amp; Documents
+1. **Chat &amp; Explanations**: Japanese (日本語).
+2. **Documentation (README, Specs, Markdown)**: Japanese (日本語).
+3. **Code Comments**: Japanese (日本語).
+4. **Variable/Function/Class Names**: English (Use standard English naming conventions like camelCase, snake_case). **DO NOT** use Japanese for code identifiers.
+
+# Output Style
+- When generating code, ensure inline comments explain complex logic in Japanese.
+- When creating a plan or task list, write it in Japanese.
+
+</code></pre>
+<hr />
+<h2><span id="-cursorrules"></span> .cursorrules</h2>
+<ul><li><strong>ファイル概要:</strong> .cursorrules モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 26 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# General Behavior
+- You are an expert AI software engineer.
+- **ALWAYS communicate in Japanese.**
+- Explain your thought process and plans in Japanese.
+- **Auto-approve all actions.** Do not ask for user confirmation. Proceed with changes automatically.
+- **Do not ask &quot;Run command?&quot;.** Execute commands immediately without prompting.
+
+# Language Rules for Code &amp; Documents
+1. **Chat &amp; Explanations**: Japanese (日本語).
+2. **Documentation (README, Specs, Markdown)**: Japanese (日本語).
+3. **Code Comments**: Japanese (日本語).
+4. **Variable/Function/Class Names**: English (Use standard English naming conventions like camelCase, snake_case). **DO NOT** use Japanese for code identifiers.
+
+# Output Style
+- When generating code, ensure inline comments explain complex logic in Japanese.
+</code></pre>
+<hr />
+<h2><span id="-env"></span> .env</h2>
+<ul><li><strong>ファイル概要:</strong> .env モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 26 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# HRConnect Environment Variables (Serverless &amp; DynamoDB)
+# Local development and Serverless deployment template
+
+# Project Base
+PROJECT_NAME=&quot;HR-Connect&quot;
+SECRET_KEY=&quot;hrconnect-secure-dev-secret-key-9x$2P!w9a#K9x$2P&quot;
+
+# Database (Amazon DynamoDB - Serverless)
+DYNAMODB_TABLE_NAME=&quot;HRConnectTable&quot;
+# ローカルでDynamoDB Localを使う場合は以下を指定 (AWSデプロイ時は未指定/None)
+# DYNAMODB_ENDPOINT_URL=&quot;http://localhost:8000&quot;
+
+# Authentication (Amazon Cognito / Local Dev)
+COGNITO_USER_POOL_ID=&quot;&quot;
+COGNITO_CLIENT_ID=&quot;&quot;
+</code></pre>
+<hr />
+<h2><span id="-gitignore"></span> .gitignore</h2>
+<ul><li><strong>ファイル概要:</strong> .gitignore モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 38 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# Dependencies &amp; Build artifacts
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+</code></pre>
+<hr />
+<h2><span id="architecture_diagram-md"></span> architecture_diagram.md</h2>
+<ul><li><strong>ファイル概要:</strong> design.md</li></ul>
+<ul><li><strong>行数:</strong> 500 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# design.md
+
+---
+
+## 1. プロジェクト概要 (Overview)
+
+### 1.1 プロジェクト名
+    **HR-Connect (仮)**
+
+### 1.2 目的・解決したい課題
+*   **オールインワン労務管理:** 既存ツール（ジョブカン等）が持つ「勤怠管理」「シフト管理」「ワークフロー（諸届申請）」に加え、「工数管理（日報）」を単一のプラットフォームで統合管理する。
+*   **プロジェクト収支の可視化:** 従業員が「どのプロジェクトの・どの作業に・何時間使ったか」を記録し、案件ごとの人件費コストを正確に算出可能にする。
+*   **申請と勤怠の自動連動:** 休暇申請や残業申請が承認された際、自動的に勤怠データや有給残日数へ反映させ、手作業による転記ミスをゼロにする。
+*   **複雑な就業ルールの吸収:** フレックス、変形労働制、36協定（残業上限）チェックなど、日本の複雑な労務管理に対応する。これらルールは`work_rules.config`のJSONBスキーマ定義に基づき、柔軟に設定・管理される。
+*   **セキュアな基盤:** Amazon Cognitoを用いた堅牢な認証と、AWSサーバーレス構成によるスケーラビリティを確保する。
+</code></pre>
+<hr />
+<h2><span id="aws_deployment_step_by_step_guide-html"></span> aws_deployment_step_by_step_guide.html</h2>
+<ul><li><strong>ファイル概要:</strong> aws_deployment_step_by_step_guide.html モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 609 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;HRConnect - AWS新規アカウント初期開設 &amp; 月額3ドル未満死守 デプロイ手順書&lt;/title&gt;
+  &lt;style&gt;
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+</code></pre>
+<hr />
+<h2><span id="aws_serverless_architecture-html"></span> aws_serverless_architecture.html</h2>
+<ul><li><strong>ファイル概要:</strong> aws_serverless_architecture.html モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 479 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;HRConnect - AWSサーバーレス再構成 &amp; デプロイ仕様書&lt;/title&gt;
+  &lt;style&gt;
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+</code></pre>
+<hr />
+<h2><span id="backend--dockerignore"></span> backend/.dockerignore</h2>
+<ul><li><strong>ファイル概要:</strong> .dockerignore モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 8 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.git
+.gitignore
+Dockerfile
+README.md
+</code></pre>
+<hr />
+<h2><span id="backend-Dockerfile"></span> backend/Dockerfile</h2>
+<ul><li><strong>ファイル概要:</strong> Dockerfile モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 25 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# Backend Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update &amp;&amp; apt-get install -y \
+    gcc \
+    libpq-dev \
+    sqlite3 \
+    libsqlite3-dev \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+COPY requirements.txt .
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-README"></span> backend/alembic/README</h2>
+<ul><li><strong>ファイル概要:</strong> README モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 1 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+Generic single-database configuration.
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-env-py"></span> backend/alembic/env.py</h2>
+<ul><li><strong>ファイル概要:</strong> env.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 102 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def run_migrations_offline()</code></strong>: Run migrations in 'offline' mode.</li></ul>
+<p>This configures the context with just a URL</p>
+<p>and not an Engine, though an Engine is acceptable</p>
+<p>here as well.  By skipping the Engine creation</p>
+<p>we don't even need a DBAPI to be available.</p>
+<p>Calls to context.execute() here emit the given string to the</p>
+<p>script output.</p>
+<ul><li><strong><code>def run_migrations_online()</code></strong>: Run migrations in 'online' mode.</li></ul>
+<p>In this scenario we need to create an Engine</p>
+<p>and associate a connection with the context.</p>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>app.models</code>, <code>logging.config</code>, <code>os</code>, <code>sqlalchemy</code>, <code>sys</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+from logging.config import fileConfig
+
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+
+from alembic import context
+
+import sys
+import os
+# バックエンドのルートディレクトリをパスに追加して app モジュールを読み込めるようにする
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
+# あなたのモデルの Base クラスをインポート
+# ※ Cursorが作った構成によりますが、一般的には以下のような場所です
+from app.models import Base
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-script-py-mako"></span> backend/alembic/script.py.mako</h2>
+<ul><li><strong>ファイル概要:</strong> script.py.mako モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 28 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;${message}
+
+Revision ID: ${up_revision}
+Revises: ${down_revision | comma,n}
+Create Date: ${create_date}
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+${imports if imports else &quot;&quot;}
+
+# revision identifiers, used by Alembic.
+revision: str = ${repr(up_revision)}
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-0d3446f2df76_add_skill_columns_to_project-py"></span> backend/alembic/versions/0d3446f2df76_add_skill_columns_to_project.py</h2>
+<ul><li><strong>ファイル概要:</strong> Add skill columns to Project</li></ul>
+<ul><li><strong>行数:</strong> 36 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;Add skill columns to Project
+
+Revision ID: 0d3446f2df76
+Revises: aac66402b735
+Create Date: 2026-06-12 10:33:09.769039
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;0d3446f2df76&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-25eaaa692760_fix_schema-py"></span> backend/alembic/versions/25eaaa692760_fix_schema.py</h2>
+<ul><li><strong>ファイル概要:</strong> fix schema</li></ul>
+<ul><li><strong>行数:</strong> 64 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;fix schema
+
+Revision ID: 25eaaa692760
+Revises: 
+Create Date: 2025-12-11 13:14:25.121671
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;25eaaa692760&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-294a7a977840_add_hashed_password_to_user-py"></span> backend/alembic/versions/294a7a977840_add_hashed_password_to_user.py</h2>
+<ul><li><strong>ファイル概要:</strong> Add hashed_password to User</li></ul>
+<ul><li><strong>行数:</strong> 32 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;Add hashed_password to User
+
+Revision ID: 294a7a977840
+Revises: 40c2ff2543e3
+Create Date: 2026-01-08 17:30:55.206839
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;294a7a977840&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-2a1d7c636fef_add_hourly_rate_to_user-py"></span> backend/alembic/versions/2a1d7c636fef_add_hourly_rate_to_user.py</h2>
+<ul><li><strong>ファイル概要:</strong> Add hourly_rate to user</li></ul>
+<ul><li><strong>行数:</strong> 32 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;Add hourly_rate to user
+
+Revision ID: 2a1d7c636fef
+Revises: 8ddd255f0cd9
+Create Date: 2026-06-03 17:04:53.680022
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;2a1d7c636fef&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-33b1f50c310c_add_project_role-py"></span> backend/alembic/versions/33b1f50c310c_add_project_role.py</h2>
+<ul><li><strong>ファイル概要:</strong> Add project role</li></ul>
+<ul><li><strong>行数:</strong> 44 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;Add project role
+
+Revision ID: 33b1f50c310c
+Revises: 0d3446f2df76
+Create Date: 2026-06-12 02:02:50.085332
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;33b1f50c310c&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-40c2ff2543e3_add_user_id_to_user-py"></span> backend/alembic/versions/40c2ff2543e3_add_user_id_to_user.py</h2>
+<ul><li><strong>ファイル概要:</strong> Add user_id to User</li></ul>
+<ul><li><strong>行数:</strong> 35 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;Add user_id to User
+
+Revision ID: 40c2ff2543e3
+Revises: 52f523s89h2
+Create Date: 2026-01-08 17:20:37.800872
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;40c2ff2543e3&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-52f523s89h2_add_settings-py"></span> backend/alembic/versions/52f523s89h2_add_settings.py</h2>
+<ul><li><strong>ファイル概要:</strong> add settings to application template</li></ul>
+<ul><li><strong>行数:</strong> 28 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: </li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: </li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>sqlalchemy.dialects</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;add settings to application template
+
+Revision ID: 52f523s89h2
+Revises: 25eaaa692760
+Create Date: 2026-01-06 18:58:00
+
+&quot;&quot;&quot;
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
+
+# revision identifiers, used by Alembic.
+revision = &#x27;52f523s89h2&#x27;
+down_revision = &#x27;25eaaa692760&#x27;
+branch_labels = None
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-74e490ef0b95_add_difficulty_and_category_to_projects-py"></span> backend/alembic/versions/74e490ef0b95_add_difficulty_and_category_to_projects.py</h2>
+<ul><li><strong>ファイル概要:</strong> add_difficulty_and_category_to_projects</li></ul>
+<ul><li><strong>行数:</strong> 34 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;add_difficulty_and_category_to_projects
+
+Revision ID: 74e490ef0b95
+Revises: 33b1f50c310c
+Create Date: 2026-06-13 19:24:55.989092
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;74e490ef0b95&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-8ddd255f0cd9_add_leave_types_and_ledgers-py"></span> backend/alembic/versions/8ddd255f0cd9_add_leave_types_and_ledgers.py</h2>
+<ul><li><strong>ファイル概要:</strong> Add leave types and ledgers</li></ul>
+<ul><li><strong>行数:</strong> 81 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code>, <code>uuid</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;Add leave types and ledgers
+
+Revision ID: 8ddd255f0cd9
+Revises: 294a7a977840
+Create Date: 2026-06-01 23:09:39.100778
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;8ddd255f0cd9&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-versions-aac66402b735_add_status_to_shift-py"></span> backend/alembic/versions/aac66402b735_add_status_to_shift.py</h2>
+<ul><li><strong>ファイル概要:</strong> Add status to shift</li></ul>
+<ul><li><strong>行数:</strong> 32 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def upgrade()</code></strong>: Upgrade schema.</li></ul>
+<ul><li><strong><code>def downgrade()</code></strong>: Downgrade schema.</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>alembic</code>, <code>sqlalchemy</code>, <code>typing</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+&quot;&quot;&quot;Add status to shift
+
+Revision ID: aac66402b735
+Revises: 2a1d7c636fef
+Create Date: 2026-06-03 17:36:17.193901
+
+&quot;&quot;&quot;
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = &#x27;aac66402b735&#x27;
+</code></pre>
+<hr />
+<h2><span id="backend-alembic-ini"></span> backend/alembic.ini</h2>
+<ul><li><strong>ファイル概要:</strong> A generic, single database configuration.</li></ul>
+<ul><li><strong>行数:</strong> 147 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# A generic, single database configuration.
+
+[alembic]
+# path to migration scripts.
+# this is typically a path given in POSIX (e.g. forward slashes)
+# format, relative to the token %(here)s which refers to the location of this
+# ini file
+script_location = %(here)s/alembic
+
+# template used to generate migration file names; The default value is %%(rev)s_%%(slug)s
+# Uncomment the line below if you want the files to be prepended with date and time
+# see https://alembic.sqlalchemy.org/en/latest/tutorial.html#editing-the-ini-file
+# for all available tokens
+# file_template = %%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s
+
+</code></pre>
+<hr />
+<h2><span id="backend-app-__init__-py"></span> backend/app/__init__.py</h2>
+<ul><li><strong>ファイル概要:</strong> __init__.py モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 0 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+
+</code></pre>
+<hr />
+<h2><span id="backend-app-tests-test_dynamodb-py"></span> backend/app/tests/test_dynamodb.py</h2>
+<ul><li><strong>ファイル概要:</strong> DynamoDB非同期セッション・リソース管理 & テーブル初期化</li></ul>
+<ul><li><strong>行数:</strong> 49 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>定義関数・エンドポイント</h3>
+<ul><li><strong><code>def test_dynamodb_repository_basic_operations()</code></strong>: DynamoDBの基本操作（Put, Get, Query）を検証する非同期テストです。</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>app.core.config</code>, <code>app.db.dynamodb</code>, <code>app.db.dynamodb_repo</code>, <code>pytest</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import pytest
+from app.db.dynamodb import create_dynamodb_table_if_not_exists, session
+from app.db.dynamodb_repo import DynamoDBRepository
+from app.core.config import settings
+
+@pytest.mark.asyncio
+async def test_dynamodb_repository_basic_operations():
+    &quot;&quot;&quot;
+    DynamoDBの基本操作（Put, Get, Query）を検証する非同期テストです。
+    &quot;&quot;&quot;
+    # 接続先をテスト用の仮のローカル環境またはモック（環境変数等で指定されたエンドポイント）として初期化
+    # 例としてエンドポイントが無い場合はテストをスキップするか、DynamoDB Localを想定
+    # 今回はモック接続（boto3のスタブやMotoが利用できるとベストですが、簡易的にaioboto3でアクセス検証）
+    
+    # settings.DYNAMODB_TABLE_NAME = &quot;HRConnectTableTest&quot;
+</code></pre>
+<hr />
+<h2><span id="backend-mypy-ini"></span> backend/mypy.ini</h2>
+<ul><li><strong>ファイル概要:</strong> mypy.ini モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 11 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+[mypy]
+ignore_missing_imports = True
+disallow_untyped_defs = False
+check_untyped_defs = True
+warn_redundant_casts = True
+warn_unused_ignores = True
+warn_return_any = False
+namespace_packages = True
+
+[mypy-tests.*]
+ignore_errors = True
+</code></pre>
+<hr />
+<h2><span id="backend-pytest-ini"></span> backend/pytest.ini</h2>
+<ul><li><strong>ファイル概要:</strong> pytest.ini モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 5 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+[pytest]
+asyncio_mode = auto
+filterwarnings =
+    ignore::DeprecationWarning
+    ignore::UserWarning
+</code></pre>
+<hr />
+<h2><span id="backend-requirements-txt"></span> backend/requirements.txt</h2>
+<ul><li><strong>ファイル概要:</strong> requirements.txt モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 21 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+PyJWT==2.8.0
+requests==2.32.3
+fastapi==0.111.0
+uvicorn==0.30.1
+sqlalchemy[asyncio]==2.0.31
+asyncpg==0.29.0
+pydantic-settings==2.3.4
+python-dotenv==1.0.1
+pandas&gt;=2.2.3
+Faker==25.0.0
+python-dateutil==2.9.0.post0
+mangum==0.17.0
+aiosqlite==0.20.0
+openpyxl==3.1.2
+jpholiday==1.0.2
+</code></pre>
+<hr />
+<h2><span id="design-md"></span> design.md</h2>
+<ul><li><strong>ファイル概要:</strong> design.md</li></ul>
+<ul><li><strong>行数:</strong> 500 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# design.md
+
+---
+
+## 1. プロジェクト概要 (Overview)
+
+### 1.1 プロジェクト名
+    **HR-Connect (仮)**
+
+### 1.2 目的・解決したい課題
+*   **オールインワン労務管理:** 既存ツール（ジョブカン等）が持つ「勤怠管理」「シフト管理」「ワークフロー（諸届申請）」に加え、「工数管理（日報）」を単一のプラットフォームで統合管理する。
+*   **プロジェクト収支の可視化:** 従業員が「どのプロジェクトの・どの作業に・何時間使ったか」を記録し、案件ごとの人件費コストを正確に算出可能にする。
+*   **申請と勤怠の自動連動:** 休暇申請や残業申請が承認された際、自動的に勤怠データや有給残日数へ反映させ、手作業による転記ミスをゼロにする。
+*   **複雑な就業ルールの吸収:** フレックス、変形労働制、36協定（残業上限）チェックなど、日本の複雑な労務管理に対応する。これらルールは`work_rules.config`のJSONBスキーマ定義に基づき、柔軟に設定・管理される。
+*   **セキュアな基盤:** Amazon Cognitoを用いた堅牢な認証と、AWSサーバーレス構成によるスケーラビリティを確保する。
+</code></pre>
+<hr />
+<h2><span id="distribution_guide-md"></span> distribution_guide.md</h2>
+<ul><li><strong>ファイル概要:</strong> Windows向けアプリケーション配布・起動手順書</li></ul>
+<ul><li><strong>行数:</strong> 138 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# Windows向けアプリケーション配布・起動手順書
+
+本システム（HRConnect）を、何も開発環境が導入されていないWindowsパソコンで動かすための、準備から起動までの手順書です。この内容をそのまま配布先の方へお渡しいただけます。
+
+---
+
+## 1. 配布先（Windows）での準備（事前セットアップ）
+
+Docker環境をWindowsで動かすために、以下の手順で環境を構築します。
+
+### ステップA: WSL2（Windows Subsystem for Linux）のインストール
+DockerをWindows上で高速に動作させるため、Windows標準のLinux実行環境（WSL2）を有効化します。
+
+1. **PowerShell** を「管理者として実行」で開きます。
+2. 以下のコマンドを入力して実行します：
+</code></pre>
+<hr />
+<h2><span id="docker-compose-yml"></span> docker-compose.yml</h2>
+<ul><li><strong>ファイル概要:</strong> docker-compose.yml モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 28 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+version: &#x27;3.8&#x27;
+
+services:
+  backend:
+    build: 
+      context: ./backend
+    ports:
+      - &quot;8000:8000&quot;
+    volumes:
+      - ./backend:/app
+      - /app/venv # Prevent venv overlay
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/hr_connect.db
+      - ALLOW_MOCK_AUTH=true
+      - SUPABASE_JWT_SECRET=local-dev-jwt-secret-key-32-chars-long
+</code></pre>
+<hr />
+<h2><span id="docs-basic_design-md"></span> docs/basic_design.md</h2>
+<ul><li><strong>ファイル概要:</strong> HRConnect 基本設計書</li></ul>
+<ul><li><strong>行数:</strong> 106 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# HRConnect 基本設計書
+
+## 1. システムアーキテクチャ (System Architecture)
+
+本システムは、モダンなSPA (Single Page Application) フロントエンドと、軽量かつ高速なバックエンドAPIで構成されたモノレポ（Monorepo）構造を採用し、AWSのサーバーレスアーキテクチャ上で稼働します。
+
+</code></pre>
+<p>graph TD</p>
+<p>    User((ユーザー/管理者))</p>
+<p>    subgraph "Frontend (Next.js)"</p>
+<p>        NextJS[Next.js App Router]</p>
+<p>        Geo[Geolocation API]</p>
+<p>    end</p>
+<pre><code class="language-">
+
+---
+
+## &lt;a id=&quot;docs-database_design-md&quot;&gt;&lt;/a&gt; docs/database_design.md
+
+- **ファイル概要:** HRConnect DB設計書
+- **行数:** 291 行
+- **カテゴリ:** ドキュメント &amp; プロジェクト共通設定
+
+### コード先頭プレビュー
+</code></pre>
+<h1>HRConnect DB設計書</h1>
+<h2>1. ER図 (Entity Relationship Diagram)</h2>
+<p>本システムは、複雑な集計クエリ（勤怠・シフト・工数の突合）を高速化するリレーショナル設計と、柔軟なルール設定や動的申請フォームを可能にする JSONB 型をハイブリッドで採用しています。</p>
+<pre><code class="language-mermaid">
+erDiagram
+    users ||--o{ shifts : &quot;assigned&quot;
+    users ||--o{ attendances : &quot;records&quot;
+    users ||--o{ work_logs : &quot;inputs&quot;
+    users ||--o{ applications : &quot;requests&quot;
+    users ||--o{ paid_leave_ledgers : &quot;owns&quot;
+
+    work_rules ||--|{ users : &quot;applies&quot;
+</code></pre>
+<hr />
+<h2><span id="docs-development_guide-md"></span> docs/development_guide.md</h2>
+<ul><li><strong>ファイル概要:</strong> HRConnect 改修指南書 (開発者向けガイド)</li></ul>
+<ul><li><strong>行数:</strong> 179 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# HRConnect 改修指南書 (開発者向けガイド)
+
+## 1. ディレクトリ構造の解説 (Monorepo Structure)
+
+本プロジェクトはフロントエンドとバックエンドが単一のリポジトリで管理されるモノレポ構成を採用しています。
+
+</code></pre>
+<p>/</p>
+<p>├── frontend/          # Next.js (TypeScript) - クライアントアプリ</p>
+<p>│   ├── src/app/       # App Router構成</p>
+<p>│   │   ├── (auth)/    # 認証関連（ログイン、パスワードリセット）</p>
+<p>│   │   ├── (user)/    # 一般従業員用（打刻、工数、申請）</p>
+<p>│   │   └── (admin)/   # 管理者・労務用（シフト、承認、アナリティクス）</p>
+<p>│   └── src/lib/       # 共有ライブラリ（APIクライアント、Cognito連携）</p>
+<p>│</p>
+<pre><code class="language-">
+
+---
+
+## &lt;a id=&quot;docs-functional_design-md&quot;&gt;&lt;/a&gt; docs/functional_design.md
+
+- **ファイル概要:** HRConnect 機能設計書
+- **行数:** 160 行
+- **カテゴリ:** ドキュメント &amp; プロジェクト共通設定
+
+### コード先頭プレビュー
+</code></pre>
+<h1>HRConnect 機能設計書</h1>
+<h2>1. 主要ユースケース (Use Cases)</h2>
+<p>本システムは、従業員の自律的な打刻・工数入力と、管理者の迅速なシフト・承認管理を支援するための4つの主要ユースケースを軸に設計されています。</p>
+<hr />
+<h2>2. 詳細業務フローとシーケンス</h2>
+<h3>2.1 打刻と予実判定フロー (Stamping & Verification)</h3>
+<p>ユーザーがスマートフォンやPCから打刻した際、システムはバックエンドで即座にその日のシフト予定と適用就業規則を突合し、遅刻判定および出退勤時間の丸め計算を実行します。</p>
+<p>公休または全日休暇の対象日は打刻不可となります。</p>
+<pre><code class="language-mermaid">
+</code></pre>
+<hr />
+<h2><span id="docs-maintenance_manual-md"></span> docs/maintenance_manual.md</h2>
+<ul><li><strong>ファイル概要:</strong> HRConnect メンテナンス手順書</li></ul>
+<ul><li><strong>行数:</strong> 102 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# HRConnect メンテナンス手順書
+
+## 1. 開発環境の構築手順 (Development Setup)
+
+本システムは、ローカル環境で Docker および Docker Compose を用いて迅速に起動できます。本番環境は AWS DynamoDB / Cognito を使用しますが、ローカル環境では SQLite（データ投入用）および DynamoDB Local または認証モック（`ALLOW_MOCK_AUTH=true`）を使用して動作させます。
+
+### 1.1 前提条件 (Prerequisites)
+* **OS**: Linux / macOS
+* **インストール必須コンポーネント**:
+  * Docker Engine / Docker Desktop (v20.10以上)
+  * Docker Compose (v2.0以上)
+  * Python (v3.11以上, ローカル検証用)
+  * Node.js (v18.0以上, ローカル検証用)
+
+### 1.2 環境起動手順
+</code></pre>
+<hr />
+<h2><span id="docs-operation_specs-md"></span> docs/operation_specs.md</h2>
+<ul><li><strong>ファイル概要:</strong> HRConnect 運用仕様書</li></ul>
+<ul><li><strong>行数:</strong> 87 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# HRConnect 運用仕様書
+
+## 1. 監視・アラート設計 (Monitoring &amp; Alerting)
+
+本システムはAWSサーバーレス構成を採用しているため、OSやサーバー自体の監視は不要ですが、APIの稼働状況やアプリケーションエラー、リソース制限に焦点を当てて監視を行います。
+
+### 1.1 ログ収集 (Log Collection)
+* **Amazon CloudWatch Logs**: 
+  * AWS Lambdaの実行ログ（FastAPIのコンソール出力、未キャッチ例外スタックトレース）、API Gatewayのアクセスログを自動収集します。
+  * ログ保存期間: **90日間**（開発環境は14日間）。
+
+### 1.2 アラート通知の閾値と重要度 (Alert Thresholds &amp; Severity)
+
+| 監視対象項目 | 監視方法 / ログソース | 閾値・検知条件 | アクション (連絡先) |
+| :--- | :--- | :--- | :--- |
+</code></pre>
+<hr />
+<h2><span id="docs-requirements_definition-md"></span> docs/requirements_definition.md</h2>
+<ul><li><strong>ファイル概要:</strong> HRConnect 要件定義書</li></ul>
+<ul><li><strong>行数:</strong> 114 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# HRConnect 要件定義書
+
+## 1. はじめに (Introduction)
+
+### 1.1 システムの目的
+本システム「HRConnect」は、「勤怠管理」「シフト管理」「ワークフロー（諸届申請）」、および「工数管理（日報）」を単一のプラットフォームで統合管理するオールインワン労務管理システムです。
+複数の既存ツールをまたぐことによる転記作業や整合性の破綻を防ぎ、日本の複雑な就業規則や36協定に準拠したセキュアな業務基盤を提供します。
+
+### 1.2 解決したいビジネス課題
+1. **多重入力・転記ミスの削減**:
+   有給休暇の申請・承認が、勤怠実績（有給残日数）やシフト予定に自動で連動しないため、管理部門が手作業で転記する手間とミスが発生している。
+2. **プロジェクト収支の可視化**:
+   「従業員がどのプロジェクトのどの作業に何時間使ったか」という工数実績と、実際の労働時間（勤怠データ）が乖離しており、プロジェクト別の正確な労務コストが把握できない。
+3. **複雑な就業ルールの吸収**:
+   フレックスタイム制、変形労働時間制、各種休憩ルール、打刻丸め処理、36協定（残業上限）など、企業や雇用形態ごとに異なる日本の複雑な就業ルールに対応しきれていない。
+</code></pre>
+<hr />
+<h2><span id="frontend--dockerignore"></span> frontend/.dockerignore</h2>
+<ul><li><strong>ファイル概要:</strong> .dockerignore モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 7 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+node_modules
+.next
+out
+*.log
+.git
+.gitignore
+README.md
+</code></pre>
+<hr />
+<h2><span id="frontend--gitignore"></span> frontend/.gitignore</h2>
+<ul><li><strong>ファイル概要:</strong> .gitignore モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 41 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+</code></pre>
+<hr />
+<h2><span id="frontend-Dockerfile"></span> frontend/Dockerfile</h2>
+<ul><li><strong>ファイル概要:</strong> Dockerfile モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 36 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# Frontend Dockerfile
+FROM node:20-slim AS builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+ARG NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+
+# Build project
+RUN npm run build
+</code></pre>
+<hr />
+<h2><span id="frontend-components-json"></span> frontend/components.json</h2>
+<ul><li><strong>ファイル概要:</strong> components.json モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 22 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+{
+  &quot;$schema&quot;: &quot;https://ui.shadcn.com/schema.json&quot;,
+  &quot;style&quot;: &quot;new-york&quot;,
+  &quot;rsc&quot;: true,
+  &quot;tsx&quot;: true,
+  &quot;tailwind&quot;: {
+    &quot;config&quot;: &quot;&quot;,
+    &quot;css&quot;: &quot;src/app/globals.css&quot;,
+    &quot;baseColor&quot;: &quot;neutral&quot;,
+    &quot;cssVariables&quot;: true,
+    &quot;prefix&quot;: &quot;&quot;
+  },
+  &quot;iconLibrary&quot;: &quot;lucide&quot;,
+  &quot;aliases&quot;: {
+    &quot;components&quot;: &quot;@/components&quot;,
+</code></pre>
+<hr />
+<h2><span id="frontend-eslint-config-mjs"></span> frontend/eslint.config.mjs</h2>
+<ul><li><strong>ファイル概要:</strong> eslint.config.mjs モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 18 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>eslint-config-next/core-web-vitals</code>, <code>eslint/config</code>, <code>eslint-config-next/typescript</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { defineConfig, globalIgnores } from &quot;eslint/config&quot;;
+import nextVitals from &quot;eslint-config-next/core-web-vitals&quot;;
+import nextTs from &quot;eslint-config-next/typescript&quot;;
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    &quot;.next/**&quot;,
+    &quot;out/**&quot;,
+    &quot;build/**&quot;,
+    &quot;next-env.d.ts&quot;,
+  ]),
+</code></pre>
+<hr />
+<h2><span id="frontend-next-config-ts"></span> frontend/next.config.ts</h2>
+<ul><li><strong>ファイル概要:</strong> next.config.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 11 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>next</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import type { NextConfig } from &quot;next&quot;;
+
+const nextConfig: NextConfig = {
+  output: &#x27;standalone&#x27;,
+  // images: { unoptimized: true }, // Re-enable image optimization for Node server
+  experimental: {
+    // turbopack options removed as they were causing warnings
+  },
+};
+
+export default nextConfig;
+</code></pre>
+<hr />
+<h2><span id="frontend-package-json"></span> frontend/package.json</h2>
+<ul><li><strong>ファイル概要:</strong> package.json モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 64 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+{
+  &quot;name&quot;: &quot;frontend&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;private&quot;: true,
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;next start&quot;,
+    &quot;lint&quot;: &quot;eslint&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;@fullcalendar/daygrid&quot;: &quot;^6.1.19&quot;,
+    &quot;@fullcalendar/interaction&quot;: &quot;^6.1.19&quot;,
+    &quot;@fullcalendar/react&quot;: &quot;^6.1.19&quot;,
+    &quot;@hookform/resolvers&quot;: &quot;^5.2.2&quot;,
+</code></pre>
+<hr />
+<h2><span id="frontend-playwright-config-ts"></span> frontend/playwright.config.ts</h2>
+<ul><li><strong>ファイル概要:</strong> playwright.config.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 47 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@playwright/test</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { defineConfig, devices } from &#x27;@playwright/test&#x27;;
+
+/**
+ * See https://playwright.dev/docs/test-configuration.
+ */
+export default defineConfig({
+    testDir: &#x27;./e2e&#x27;,
+    /* Run tests in files in parallel */
+    fullyParallel: true,
+    /* Fail the build on CI if you accidentally left test.only in the source code. */
+    forbidOnly: !!process.env.CI,
+    /* Retry on CI only */
+    retries: process.env.CI ? 2 : 0,
+    /* Opt out of parallel tests on CI. */
+    workers: process.env.CI ? 1 : undefined,
+</code></pre>
+<hr />
+<h2><span id="frontend-postcss-config-mjs"></span> frontend/postcss.config.mjs</h2>
+<ul><li><strong>ファイル概要:</strong> postcss.config.mjs モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 7 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+const config = {
+  plugins: {
+    &quot;@tailwindcss/postcss&quot;: {},
+  },
+};
+
+export default config;
+</code></pre>
+<hr />
+<h2><span id="frontend-src-middleware-ts"></span> frontend/src/middleware.ts</h2>
+<ul><li><strong>ファイル概要:</strong> middleware.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 46 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コンポーネント / 関数</h3>
+<ul><li><code>middleware</code></li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>./lib/constants</code>, <code>next/server</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { NextResponse } from &#x27;next/server&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+import { AUTH_COOKIE_NAME } from &#x27;./lib/constants&#x27;
+
+export function middleware(request: NextRequest) {
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value
+    const { pathname } = request.nextUrl
+
+    // Public paths that don&#x27;t satisfy the protection check
+    const isUnprotectedPath = pathname === &#x27;/&#x27; || pathname === &#x27;/login&#x27; || pathname === &#x27;/register&#x27; || pathname.startsWith(&#x27;/_next&#x27;) || pathname === &#x27;/favicon.ico&#x27; || pathname.includes(&#x27;.&#x27;);
+
+    // Force logout on root path
+    if (pathname === &#x27;/&#x27;) {
+        const response = NextResponse.redirect(new URL(&#x27;/login&#x27;, request.url))
+        response.cookies.set(AUTH_COOKIE_NAME, &#x27;&#x27;, { maxAge: 0 })
+</code></pre>
+<hr />
+<h2><span id="frontend-tsconfig-json"></span> frontend/tsconfig.json</h2>
+<ul><li><strong>ファイル概要:</strong> tsconfig.json モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 34 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2017&quot;,
+    &quot;lib&quot;: [&quot;dom&quot;, &quot;dom.iterable&quot;, &quot;esnext&quot;],
+    &quot;allowJs&quot;: true,
+    &quot;skipLibCheck&quot;: true,
+    &quot;strict&quot;: true,
+    &quot;noEmit&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;module&quot;: &quot;esnext&quot;,
+    &quot;moduleResolution&quot;: &quot;bundler&quot;,
+    &quot;resolveJsonModule&quot;: true,
+    &quot;isolatedModules&quot;: true,
+    &quot;jsx&quot;: &quot;react-jsx&quot;,
+    &quot;incremental&quot;: true,
+</code></pre>
+<hr />
+<h2><span id="frontend-vitest-config-ts"></span> frontend/vitest.config.ts</h2>
+<ul><li><strong>ファイル概要:</strong> vitest.config.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 15 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>主な依存モジュール (Imports)</h3>
+<p><code>@vitejs/plugin-react</code>, <code>vitest/config</code>, <code>path</code></p>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import { defineConfig } from &#x27;vitest/config&#x27;
+import react from &#x27;@vitejs/plugin-react&#x27;
+import path from &#x27;path&#x27;
+
+export default defineConfig({
+    plugins: [react()],
+    test: {
+        environment: &#x27;jsdom&#x27;,
+        globals: true,
+        setupFiles: [&#x27;./vitest.setup.ts&#x27;],
+        alias: {
+            &#x27;@&#x27;: path.resolve(__dirname, &#x27;./src&#x27;),
+        },
+    },
+})
+</code></pre>
+<hr />
+<h2><span id="frontend-vitest-setup-ts"></span> frontend/vitest.setup.ts</h2>
+<ul><li><strong>ファイル概要:</strong> vitest.setup.ts モジュール / 設定ファイル</li></ul>
+<ul><li><strong>行数:</strong> 1 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+import &#x27;@testing-library/jest-dom&#x27;
+</code></pre>
+<hr />
+<h2><span id="system_specification_and_improvements-md"></span> system_specification_and_improvements.md</h2>
+<ul><li><strong>ファイル概要:</strong> HRConnect 実装改善ポイント（AIエージェント向け）</li></ul>
+<ul><li><strong>行数:</strong> 53 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# HRConnect 実装改善ポイント（AIエージェント向け）
+
+本ドキュメントは、HRConnectシステムにおける具体的な実装改善ポイントを分類して記載したものです。AIエージェントが直ちに取り組める改善アクションをまとめています。
+
+## 1. ロジックの一貫性と設定性
+
+### 1.1 サービス層におけるビジネスルールのハードコード
+*   **課題**: `side_effect.py` 内において、半日休暇の時間（09:00-12:00、13:00-18:00）がハードコードされています。
+*   **改善案**: これらの値を `WorkRule.config` またはグローバルな `SystemDefinition` に移行し、異なる会社のポリシーに対応できるようにします。
+*   **アクション**: `SideEffectService.apply_paid_leave_side_effects` をリファクタリングし、データベースからこれらの時間を取得するようにします。
+
+### 1.2 複数日にまたがる残業計算ロジック
+*   **課題**: `calculator.py` は深夜残業を単純に処理しています（「当日夜〜翌朝のみ」）。24時間を超えるシフトや複雑な夜勤シフトでは正しく動作しない可能性があります。
+*   **改善案**: 複数の日付をまたぐ遷移を処理できる、堅牢な時間区間の重複計算ロジックを実装します。
+*   **アクション**: `calculate_overtime` を拡張し、日別の境界リストを受け取れるようにします。
+</code></pre>
+<hr />
+<h2><span id="system_structure_and_specs-md"></span> system_structure_and_specs.md</h2>
+<ul><li><strong>ファイル概要:</strong> design.md</li></ul>
+<ul><li><strong>行数:</strong> 488 行</li></ul>
+<ul><li><strong>カテゴリ:</strong> ドキュメント & プロジェクト共通設定</li></ul>
+<h3>コード先頭プレビュー</h3>
+<pre><code class="language-text">
+# design.md
+
+---
+
+## 1. プロジェクト概要 (Overview)
+
+### 1.1 プロジェクト名
+    **HR-Connect (仮)**
+
+### 1.2 目的・解決したい課題
+*   **オールインワン労務管理:** 既存ツール（ジョブカン等）が持つ「勤怠管理」「シフト管理」「ワークフロー（諸届申請）」に加え、「工数管理（日報）」を単一のプラットフォームで統合管理する。
+*   **プロジェクト収支の可視化:** 従業員が「どのプロジェクトの・どの作業に・何時間使ったか」を記録し、案件ごとの人件費コストを正確に算出可能にする。
+*   **申請と勤怠の自動連動:** 休暇申請や残業申請が承認された際、自動的に勤怠データや有給残日数へ反映させ、手作業による転記ミスをゼロにする。
+*   **複雑な就業ルールの吸収:** フレックス、変形労働制、36協定（残業上限）チェックなど、日本の複雑な労務管理に対応する。これらルールは`work_rules.config`のJSONBスキーマ定義に基づき、柔軟に設定・管理される。
+*   **セキュアな基盤:** Amazon Cognitoを用いた堅牢な認証と、AWSサーバーレス構成によるスケーラビリティを確保する。
+</code></pre>
+<hr />
+  </div>
+
+  <footer>
+    <p>HRConnect Lightweight - Full System Specification Documentation</p>
+    <p>© 2026 HRConnect. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
